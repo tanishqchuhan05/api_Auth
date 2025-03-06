@@ -7,6 +7,12 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            match: [/.+@.+\..+/, "Please enter a valid email address"], // Email validation
+        },
         password: {
             type: String, // Removed `unique: true`
             required: true, // Added required field
@@ -15,6 +21,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             enum: ["superAdmin", "admin", "manager", "user"],
+            default: "user"
         },
     },
     { timestamps: true }
