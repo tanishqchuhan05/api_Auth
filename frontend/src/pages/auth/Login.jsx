@@ -16,15 +16,28 @@ const Login = () => {
   // Handle form submission
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     try {
-      const response = await axios.post("http://localhost:7001/api/auth/login", values);
-      alert(response.data.message);
-      localStorage.setItem("token", response.data.data.token); // Store token in localStorage
-      navigate("/dashboard"); // Redirect after login
+        const response = await axios.post("http://localhost:7001/api/auth/login", values);
+        
+        console.log("🔑 Token received:", response.data.token); // Log received token
+        
+        if (!response.data.token) {
+            throw new Error("No token received from server.");
+        }
+
+        localStorage.setItem("token", response.data.token); // Store token
+        console.log("✅ Token saved in localStorage:", localStorage.getItem("token")); // Verify storage
+
+        navigate("/"); // Redirect after login
     } catch (error) {
-      setErrors({ general: error.response?.data?.message || "Login failed" });
+        console.error("❌ Login Error:", error.response?.data || error.message);
+        setErrors({ general: error.response?.data?.message || "Login failed" });
     }
     setSubmitting(false);
-  };
+};
+
+// Immediately check if token exists
+console.log("🛠️ Token in localStorage after login:", localStorage.getItem("token"));
+
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
