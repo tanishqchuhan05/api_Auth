@@ -3,7 +3,8 @@ const dotenv = require('dotenv');
 const cors = require ('cors');
 const dbConnect = require('./config/dbConnect');
 const authRoutes = require("./routes/authRoutes");
-const createSuperAdmin = require("../backend/utilities/createSuperAdmin") 
+const createSuperAdmin = require("../backend/utilities/createSuperAdmin");
+const adminRoutes = require("./routes/adminRoutes")
 
 
 
@@ -31,7 +32,7 @@ app.use(express.json());
 
 //Routes
 app.use("/api/auth", authRoutes);
-
+app.use("/api/admin", adminRoutes);
 
 
 //start the server

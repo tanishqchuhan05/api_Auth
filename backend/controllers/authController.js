@@ -39,7 +39,7 @@ const login = async (req, res) => {
 
         // Generate JWT token
         const token = JWTHandler.generateToken(user);
-        return APIResponse.success(res, { status: 200, message: "Login Successful", data: { token } });
+        return APIResponse.success(res, { status: 200, message: "Login Successful", token  });
     } catch (error) {
         return APIResponse.error(res, { status: 500, message: "Login Failed", error });
     }
