@@ -1,42 +1,44 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require ('cors');
-const dbConnect = require('./config/dbConnect');
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const dbConnect = require("./config/dbConnect");
 const authRoutes = require("./routes/authRoutes");
 const createSuperAdmin = require("../backend/utilities/createSuperAdmin");
-const adminRoutes = require("./routes/adminRoutes")
+const adminRoutes = require("./routes/adminRoutes");
+const userRoutes = require("./routes/userRoutes");
+const movieRoutes = require("./routes/movieRoutes");
 
-
-
-//Load environment varaibles from .env file
+// Load environment variables from .env file
 dotenv.config();
 
-
-//dbConnect();
 // Connect to Database
 dbConnect().then(() => {
-    console.log("🔥 Connected to MongoDB");
-    createSuperAdmin(); // ✅ Call the function AFTER connecting to DB
-  });
+  console.log("🔥 Connected to MongoDB");
+  createSuperAdmin(); // ✅ Call AFTER DB connection
+});
 
 const app = express();
 
+// ✅ FIXED CORS CONFIGURATION
 const corsOptions = {
-    origin: [`http://localhost:3000`], method: ["POST", "PUT", "PATCH", "DELETE"], credential: true
-}
-
+  origin: "http://localhost:3000", // ✅ Allow frontend URL
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // ✅ Fixed methods
+  allowedHeaders: ["Content-Type", "Authorization"], // ✅ Allow token headers
+  credentials: true, // ✅ Required for authentication
+};
 app.use(cors(corsOptions));
 
-//Middleware
+// Middleware
 app.use(express.json());
 
-//Routes
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/movies", movieRoutes);
 
-
-//start the server
-const PORT = process.env.PORT || 7002;
-app.listen(PORT, ()=>{
-    console.log(`Server is runing at port ${PORT}`);
-});  
+// Start the server
+const PORT = process.env.PORT || 7001;
+app.listen(PORT, () => {
+  console.log(`🚀 Server is running on port ${PORT}`);
+});
