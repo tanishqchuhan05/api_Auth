@@ -18,16 +18,28 @@ const Login = () => {
     try {
         const response = await axios.post("http://localhost:7001/api/auth/login", values);
         
-        console.log("🔑 Token received:", response.data.token); // Log received token
+       // console.log("🔑 Token received:", response.data.token); // Log received token
         
         if (!response.data.token) {
             throw new Error("No token received from server.");
         }
 
         localStorage.setItem("token", response.data.token); // Store token
-        console.log("✅ Token saved in localStorage:", localStorage.getItem("token")); // Verify storage
+        localStorage.setItem("adminName", response.data.user.username);
+        
+       // ✅ Ensure `user` exists before accessing `role`
+       if (response.data.user && response.data.user.role) {
+        localStorage.setItem("role", response.data.user.role);
+        console.log("✅ Token & Role saved:", localStorage.getItem("token"), localStorage.getItem("role"));
 
-        navigate("/"); // Redirect after login
+
+        //navigate("/admindashboard"); // Redirect after login
+        if(response.data.user.role === "superAdmin"){
+          navigate("/admindashboard");
+        }else{
+          navigate("/userdashboard");
+        }
+      }
     } catch (error) {
         console.error("❌ Login Error:", error.response?.data || error.message);
         setErrors({ general: error.response?.data?.message || "Login failed" });
@@ -36,7 +48,7 @@ const Login = () => {
 };
 
 // Immediately check if token exists
-console.log("🛠️ Token in localStorage after login:", localStorage.getItem("token"));
+//console.log("🛠️ Token in localStorage after login:", localStorage.getItem("token"));
 
 
   return (

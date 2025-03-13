@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar"; // Import Navbar
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+const AdminDashboard = () => {
+  const navigate = useNavigate();
   const [dashboardStats, setDashboardStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,9 +52,9 @@ const Home = () => {
         ) : (
           <div className="row">
             {/* Total Users */}
-            <div className="col-md-4">
+            <div className="col-md-3">
               <div className="card text-bg-primary mb-3">
-                <div className="card-body">
+                <div className="card-body" onClick={() => navigate("/admin/getalluser")}>
                   <h5 className="card-title">Total Users</h5>
                   <p className="card-text fs-3">{dashboardStats?.totalUser || 0}</p>
                 </div>
@@ -60,7 +62,7 @@ const Home = () => {
             </div>
 
             {/* Total Orders */}
-            <div className="col-md-4">
+            <div className="col-md-3">
               <div className="card text-bg-success mb-3">
                 <div className="card-body">
                   <h5 className="card-title">Total Orders</h5>
@@ -70,7 +72,7 @@ const Home = () => {
             </div>
 
             {/* Total Revenue */}
-            <div className="col-md-4">
+            <div className="col-md-3">
               <div className="card text-bg-warning mb-3">
                 <div className="card-body">
                   <h5 className="card-title">Total Revenue</h5>
@@ -78,6 +80,17 @@ const Home = () => {
                 </div>
               </div>
             </div>
+
+            {/* ✅ Total Movies - New Card */}
+            <div className="col-md-3">
+              <div className="card text-bg-info mb-3">
+                <div className="card-body" onClick={() => navigate("/admin/movies")}>
+                  <h5 className="card-title">Total Movies</h5>
+                  <p className="card-text fs-3">{dashboardStats?.totalMovies || 0}</p>
+                </div>
+              </div>
+            </div>
+
           </div>
         )}
       </div>
@@ -85,4 +98,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default AdminDashboard;

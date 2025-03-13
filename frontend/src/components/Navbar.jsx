@@ -1,56 +1,66 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/img/logo.png";
 
 const Navbar = () => {
+  const [adminName, setAdminName] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedName = localStorage.getItem("adminName"); 
+    if (storedName) {
+      setAdminName(storedName); // ✅ Don't use JSON.parse() for plain strings
+    }
+  }, []);
+  
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminName");
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg bg-light">
-      <div className="container-fluid">
-        <Link className="navbar-brand" to="/">Navbar</Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link className="nav-link active" to="/">Home</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/about">About</Link>
-            </li>
-            <li className="nav-item dropdown">
-              {/* Change <a> to <button> */}
-              <button
-                className="nav-link dropdown-toggle btn btn-link"
-                id="dropdownMenuButton"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Dropdown
-              </button>
-              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><Link className="dropdown-item" to="/action">Action</Link></li>
-                <li><Link className="dropdown-item" to="/another-action">Another Action</Link></li>
-                <li><hr className="dropdown-divider" /></li>
-                <li><Link className="dropdown-item" to="/something-else">Something Else</Link></li>
+    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-lg px-4">
+      <div className="container-fluid d-flex justify-content-between align-items-center">
+        <Link className="navbar-brand" to="/admin/dashboard">
+          <img src={logo} alt="Admin Panel Logo" height="50" />
+        </Link>
+
+        {/* Profile Dropdown */}
+        {adminName ? (
+          <div className="position-relative">
+            <button
+              className="btn btn-light d-flex align-items-center"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              style={{ border: "none", background: "transparent" }}
+            >
+              <i className="fas fa-user-circle fa-2x"></i>
+              <span className="ms-2 fw-bold">{adminName}</span> {/* ✅ Show Admin Name */}
+              <i className="fas fa-caret-down ms-2"></i>
+            </button>
+
+            {dropdownOpen && (
+              <ul className="dropdown-menu show position-absolute end-0 mt-2 shadow" style={{ minWidth: "160px" }}>
+                <li>
+                  <Link className="dropdown-item" to="/admin/profile">
+                    <i className="fas fa-user-cog me-2"></i> Profile Settings
+                  </Link>
+                </li>
+                <li>
+                  <button className="dropdown-item text-danger" onClick={handleLogout}>
+                    <i className="fas fa-sign-out-alt me-2"></i> Logout
+                  </button>
+                </li>
               </ul>
-            </li>
-            <li className="nav-item">
-              <span className="nav-link disabled" aria-disabled="true">Disabled</span>
-            </li>
-          </ul>
-          <form className="d-flex" role="search">
-            <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-            <button className="btn btn-outline-success" type="submit">Search</button>
-          </form>
-        </div>
+            )}
+          </div>
+        ) : (
+          <Link className="btn btn-outline-primary" to="/admin/login">
+            Login
+          </Link>
+        )}
       </div>
     </nav>
   );
