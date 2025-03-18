@@ -1,18 +1,17 @@
 const mongoose = require("mongoose");
 
+
+
 const movieSchema = new mongoose.Schema({
-    title: String,
-    genre: String,
-    price: Number,
-    posterUrl: String,
-    releaseDate: {
-        type: Date,
-        required: true
-    },
-    nowPlaying: { type: Boolean, default: false }, // ✅ Indicates if it's now playing
-    upcoming: { type: Boolean, default: false } // ✅ Only admins can set this
+  title: { type: String, required: true },
+  price: { type: Number, required: true },
+  releaseDate: { type: String, required: true },
+  description: { type: String, required: true },
+  category: { type: String, enum: ["Upcoming Movies", "Latest Movies", "Now Playing"], required: true },
+  image: { type: String, required: true }, // Store image URL or file path
+  genre: { type: String, required: true },
+
 });
-
-
 const Movie = mongoose.model("Movie", movieSchema);
+
 module.exports = Movie;

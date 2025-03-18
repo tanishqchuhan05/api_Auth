@@ -12,14 +12,23 @@ const orderSchema = new mongoose.Schema(
             ref: "Movie",
             required: true,
         },
-        amount: {
+        movieTitle: {
+            type: String,
+            required: true,
+        },
+        price: {
             type: Number,
             required: true,
         },
+        transactionId: {
+            type: String,
+            required: true,
+            unique: true, // Prevent duplicate transactions
+        },
         status: {
             type: String,
-            enum: ["pending", "confirmed", "cancelled"],
-            default: "pending",
+            enum: ["pending", "confirmed", "cancelled", "refunded"],
+            default: "confirmed", // Since payment is successful
         },
     },
     { timestamps: true }

@@ -1,62 +1,54 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../middlewares/uploadMiddleware");
 const Movie = require("../models/movieModel");
 
-// Get movies based on category
-router.get("/", async (req, res) => {
-    try {
-      const category = req.query.category;
-      let movies;
-  
-      if (category === "now_playing") {
-        movies = await Movie.find({}); // ✅ Shows all movies
-      } else if (category === "latest") {
-        movies = await Movie.find().sort({ releaseDate: -1 }).limit(10); // ✅ Shows the latest 10 movies
-      } else if (category === "upcoming") {
-        movies = await Movie.find({ upcoming: true }); // ✅ Shows only movies marked as upcoming
-      } else {
-        movies = await Movie.find();
-      }
-  
-      res.json(movies);
-    } catch (error) {
-      res.status(500).json({ message: "Server Error" });
+// Add a new movie with an image upload
+router.post("/add", upload.single("image"), async (req, res) => {
+  try {
+    const { title, price, releaseDate, description, category } = req.body;
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+
+    if (!imagePath) {
+      return res.status(400).json({ error: "Image is required" });
     }
-  });
-  
 
-// ✅ Add a new movie (Admin only)
-router.post("/", async (req, res) => {
-  try {
-    const newMovie = new Movie(req.body);
+    const newMovie = new Movie({
+      title,
+      price,
+      releaseDate,
+      description,
+      category,
+      image: imagePath,
+    });
+
     await newMovie.save();
-    res.status(201).json({ message: "Movie added successfully", movie: newMovie });
+    res.status(201).json({ message: "Movie added successfully!", movie: newMovie });
   } catch (error) {
-    res.status(500).json({ message: "Failed to add movie" });
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 });
 
-// ✅ Update a movie (Admin only)
-router.put("/:id", async (req, res) => {
+// Get all movies
+router.get("/", async (req, res) => {
   try {
-    const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedMovie) return res.status(404).json({ message: "Movie not found" });
-
-    res.json({ message: "Movie updated successfully", movie: updatedMovie });
+    const movies = await Movie.find();
+    res.status(200).json(movies);
   } catch (error) {
-    res.status(500).json({ message: "Failed to update movie" });
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 });
 
-// ✅ Delete a movie (Admin only)
-router.delete("/:id", async (req, res) => {
+// Get a single movie by ID (Fixes your issue)
+router.get("/:id", async (req, res) => {
   try {
-    const deletedMovie = await Movie.findByIdAndDelete(req.params.id);
-    if (!deletedMovie) return res.status(404).json({ message: "Movie not found" });
-
-    res.json({ message: "Movie deleted successfully" });
+    const movie = await Movie.findById(req.params.id);
+    if (!movie) {
+      return res.status(404).json({ error: "Movie not found" });
+    }
+    res.status(200).json(movie);
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete movie" });
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 });
 

@@ -170,14 +170,25 @@ const getAllMovies = async (req, res) => {
 // ✅ Add a New Movie
 const addMovie = async (req, res) => {
     try {
-        const { title, genre, releaseDate, duration, poposter_path, isUpcoming } = req.body;
+        const { title, price, releaseDate, description, genre, category, isUpcoming } = req.body;
+
+        // Ensure an image was uploaded
+        if (!req.file) {
+            return APIResponse.error(res, {
+                status: 400,
+                message: "Image file is required",
+            });
+        }
+
+        const image = `/uploads/${req.file.filename}`; // Save file path
 
         const newMovie = new Movie({
             title,
             genre,
             releaseDate,
-            duration,
-            posterUrl: poster_path,
+            description,
+            category,
+            image: image, // Save the uploaded image path
             price,
             isUpcoming: isUpcoming || false, // Defaults to false
         });
@@ -197,6 +208,7 @@ const addMovie = async (req, res) => {
         });
     }
 };
+
 
 // ✅ Edit a Movie
 const editMovie = async (req, res) => {

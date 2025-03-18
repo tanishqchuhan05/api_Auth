@@ -1,5 +1,6 @@
 const express = require("express");
-
+const multer = require("multer");
+const path = require("path");
 const { 
   getDashboardStats, 
   getAllUsers, 
@@ -15,6 +16,18 @@ const adminMiddleware = require("../middlewares/adminMiddleware");
 
 const router = express.Router();
 
+// Multer setup for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Ensure "uploads" folder exists
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
+
 // Admin Dashboard Route
 router.get("/dashboard", adminMiddleware, getDashboardStats);
 
@@ -25,8 +38,8 @@ router.delete("/deleteUser/:id", adminMiddleware, deleteUser);
 
 // ✅ Movie Management Routes
 router.get("/movies", adminMiddleware, getAllMovies);       // Get all movies
-router.post("/movies", adminMiddleware, addMovie);         // Add a new movie
-router.put("/movies/:id", adminMiddleware, editMovie);     // Edit a movie
-router.delete("/movies/:id", adminMiddleware, deleteMovie);// Delete a movie
+router.post("/addmovie", adminMiddleware, upload.single("image"), addMovie);  // Add a new movie
+router.put("/movies/:id", adminMiddleware, upload.single("image"), editMovie); // Edit movie
+router.delete("/movies/:id", adminMiddleware, deleteMovie); // Delete movie
 
 module.exports = router;

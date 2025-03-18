@@ -7,6 +7,7 @@ const createSuperAdmin = require("../backend/utilities/createSuperAdmin");
 const adminRoutes = require("./routes/adminRoutes");
 const userRoutes = require("./routes/userRoutes");
 const movieRoutes = require("./routes/movieRoutes");
+const orderRoutes = require("./routes/orderRoutes");  
 
 // Load environment variables from .env file
 dotenv.config();
@@ -28,6 +29,13 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+
+
+const path = require("path");
+// Serve images from a folder where uploaded images are stored
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
+
+
 // Middleware
 app.use(express.json());
 
@@ -36,6 +44,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/movies", movieRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 7001;
