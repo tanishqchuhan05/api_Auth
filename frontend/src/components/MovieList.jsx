@@ -1,91 +1,93 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [filter, setFilter] = useState("now_playing");
-
-  // Wrap fetchMovies with useCallback to prevent unnecessary re-renders
-  const fetchMovies = useCallback(() => {
-    setLoading(true);
-    setError("");
-
-    axios
-      .get(`http://localhost:7001/api/movies?category=${filter}`)
-      .then((response) => {
-        setMovies(response.data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Failed to fetch movies. Please try again.");
-        setLoading(false);
-      });
-  }, [filter]); // ✅ Dependency added
+  const [filteredMovies, setFilteredMovies] = useState([]);
+  const [error, setError] = useState(null);
+  const [activeFilter, setActiveFilter] = useState("All Movies");
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await axios.get("http://localhost:7001/api/movies", {
+          withCredentials: true,
+        });
+
+        console.log("Movies API Response:", response.data);
+        setMovies(response.data);
+        setFilteredMovies(response.data); // Default to all movies
+      } catch (error) {
+        console.error("Error fetching movies:", error);
+        setError("Failed to fetch movies. Please try again.");
+      }
+    };
+
     fetchMovies();
-  }, [fetchMovies]); // ✅ Dependency added
+  }, []);
+
+  const filterMovies = (category) => {
+    setActiveFilter(category);
+    if (category === "All Movies") {
+      setFilteredMovies(movies);
+    } else {
+      setFilteredMovies(movies.filter((movie) => movie.category.trim() === category));
+    }
+  };
+
+  const handleMovieClick = (movieId) => {
+    navigate(`/movies/${movieId}`); // Redirects to movie details page
+  };
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-4">Movies</h2>
+      <h2 className="text-center mb-4">Movies</h2>
 
       {/* Filter Buttons */}
-      <div className="mb-3">
-        <button
-          className={`btn ${filter === "now_playing" ? "btn-primary" : "btn-outline-primary"} me-2`}
-          onClick={() => setFilter("now_playing")}
-        >
-          Now Playing
-        </button>
-        <button
-          className={`btn ${filter === "latest" ? "btn-primary" : "btn-outline-primary"} me-2`}
-          onClick={() => setFilter("latest")}
-        >
-          Latest Movies
-        </button>
-        <button
-          className={`btn ${filter === "upcoming" ? "btn-primary" : "btn-outline-primary"}`}
-          onClick={() => setFilter("upcoming")}
-        >
-          Upcoming Movies
-        </button>
+      <div className="d-flex justify-content-center mb-4">
+        {["All Movies", "Now Playing", "Latest Movies", "Upcoming Movies"].map((category) => (
+          <button
+            key={category}
+            className={`btn mx-2 ${activeFilter === category ? "btn-primary" : "btn-outline-primary"}`}
+            onClick={() => filterMovies(category)}
+          >
+            {category}
+          </button>
+        ))}
       </div>
 
-      {/* Loading Spinner */}
-      {loading && (
-        <div className="text-center">
-          <div className="spinner-border text-primary"></div>
-        </div>
-      )}
-
       {/* Error Message */}
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <p className="text-danger text-center">{error}</p>}
 
       {/* Movie Cards */}
       <div className="row">
-        {movies.map((movie) => (
-          <div className="col-md-4 col-lg-3 mb-4" key={movie._id}>
-            <div className="card h-100 d-flex flex-column">
-              <img
-                src={movie.poster_path ? movie.poster_path : "https://via.placeholder.com/150"}
-                className="card-img-top img-fluid"
-                alt={movie.title}
-                style={{ height: "500px", objectFit: "cover" }}
-                onError={(e) => (e.target.src = "https://via.placeholder.com/150")}
-              />
-              <div className="card-body d-flex flex-column justify-content-between">
-                <h5 className="card-title">{movie.title}</h5>
-                <p className="card-text">
-                  <strong>Genre:</strong> {movie.genre} <br />
-                  <strong>Rating:</strong> {movie.rating}
-                </p>
+        {filteredMovies.length === 0 ? (
+          <p className="text-center">No movies found</p>
+        ) : (
+          filteredMovies.map((movie) => (
+            <div key={movie._id} className="col-md-3 mb-4">
+              <div
+                className="card shadow-sm cursor-pointer"
+                onClick={() => handleMovieClick(movie._id)}
+                style={{ cursor: "pointer" }}
+              >
+                <img
+                  src={movie.image.startsWith("/uploads") ? `http://localhost:7001${movie.image}` : movie.image}
+                  alt={movie.title}
+                  className="card-img-top"
+                  style={{ height: "500px", objectFit: "cover" }}
+                />
+                <div className="card-body text-center">
+                  <h5 className="card-title">{movie.title}</h5>
+                  <p><strong>Release:</strong> {movie.releaseDate}</p>
+                  <p><strong>Price:</strong> ₹{movie.price}</p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

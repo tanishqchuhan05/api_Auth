@@ -4,8 +4,10 @@ import Login from './pages/auth/Login';
 import UserManagement from './pages/dashboard/Users';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import UserDashboard from './pages/dashboard/UserDashboard';
-import AdminMovies from './pages/dashboard/AdminMovies';  // ✅ Import the AdminMovies component
+import AdminMovies from './pages/dashboard/AdminMovies';
 import ProtectedRoute from './routes/ProtectedRoute';
+import MovieDetails from "./pages/MovieDetails";
+import MovieList from "./components/MovieList";
 
 function App() {
   return (
@@ -13,6 +15,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+        
+        {/* Public Movie Routes */}
+        <Route path="/movies" element={<MovieList />} />
+        <Route path="/movies/:id" element={<MovieDetails />} /> 
 
         {/* Protected Routes */}
         <Route path="/admindashboard" element={<ProtectedRoute role="superAdmin"><AdminDashboard /></ProtectedRoute>} />
