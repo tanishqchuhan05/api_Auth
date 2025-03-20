@@ -85,4 +85,61 @@ const deleteUser = async (req, res) =>{
 };
 
 
-module.exports = {getAllUsers, editUser, deleteUser};
+
+
+const getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select("username email role");
+
+        if (!user) {
+            return APIResponse.error(res, {
+                status: 404,
+                message: "User not found",
+                error: {}
+            });
+        }
+
+        return APIResponse.success(res, {
+            status: 200,
+            message: "Profile retrieved successfully",
+            data: user
+        });
+
+    } catch (error) {
+        return APIResponse.error(res, {
+            status: 500,
+            message: "Server error",
+            error: error.message
+        });
+    }
+};
+
+  
+const updateUserProfile = async (req, res) => {
+    try {
+        const { username } = req.body; // Get username from request
+        const userId = req.user.id; // Assuming user ID is extracted from token
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { username }, // Update username in DB
+            { new: true, select: "email role username" } // Ensure updated username is returned
+        );
+
+        res.status(200).json({
+            status: 200,
+            message: "Profile updated successfully",
+            data: {
+                username: updatedUser.username, // Now included
+                email: updatedUser.email,
+                role: updatedUser.role
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+
+
+module.exports = {getAllUsers, editUser, deleteUser, getUserProfile, updateUserProfile};

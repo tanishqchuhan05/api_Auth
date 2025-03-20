@@ -12,11 +12,12 @@ const orderSchema = new mongoose.Schema(
             ref: "Movie",
             required: true,
         },
-        movieTitle: {
-            type: String,
+        quantity: { 
+            type: Number,
             required: true,
+            default: 1,
         },
-        price: {
+        totalAmount: {  // ✅ Store total amount (including convenience fee)
             type: Number,
             required: true,
         },

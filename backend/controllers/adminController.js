@@ -18,8 +18,10 @@ const getDashboardStats = async (req, res) => {
 
         // Calculate total revenue
         const totalRevenue = await Order.aggregate([
-            { $group: { _id: null, total: { $sum: "$amount" } } }
+            { $group: { _id: null, total: { $sum: "$totalAmount" } } }
         ]);
+
+
 
         return APIResponse.success(res, {
             status: 200,
@@ -210,46 +212,46 @@ const addMovie = async (req, res) => {
 };
 
 
-// ✅ Edit a Movie
-const editMovie = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { title, genre, releaseDate, duration, poster, isUpcoming } = req.body;
+// // ✅ Edit a Movie
+// const editMovie = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const { title, genre, releaseDate, duration, poster, isUpcoming } = req.body;
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return APIResponse.error(res, {
-                status: 400,
-                message: "Invalid movie ID",
-            });
-        }
+//         if (!mongoose.Types.ObjectId.isValid(id)) {
+//             return APIResponse.error(res, {
+//                 status: 400,
+//                 message: "Invalid movie ID",
+//             });
+//         }
 
-        const updatedMovie = await Movie.findByIdAndUpdate(
-            id,
-            { title, genre, releaseDate, duration, poster, isUpcoming },
-            { new: true, runValidators: true }
-        );
+//         const updatedMovie = await Movie.findByIdAndUpdate(
+//             id,
+//             { title, genre, releaseDate, duration, poster, isUpcoming },
+//             { new: true, runValidators: true }
+//         );
 
-        if (!updatedMovie) {
-            return APIResponse.error(res, {
-                status: 404,
-                message: "Movie not found",
-            });
-        }
+//         if (!updatedMovie) {
+//             return APIResponse.error(res, {
+//                 status: 404,
+//                 message: "Movie not found",
+//             });
+//         }
 
-        return APIResponse.success(res, {
-            status: 200,
-            message: "Movie updated successfully",
-            data: updatedMovie,
-        });
+//         return APIResponse.success(res, {
+//             status: 200,
+//             message: "Movie updated successfully",
+//             data: updatedMovie,
+//         });
 
-    } catch (error) {
-        return APIResponse.error(res, {
-            status: 500,
-            message: "Failed to update movie",
-            error: error.message,
-        });
-    }
-};
+//     } catch (error) {
+//         return APIResponse.error(res, {
+//             status: 500,
+//             message: "Failed to update movie",
+//             error: error.message,
+//         });
+//     }
+// };
 
 // ✅ Delete a Movie
 const deleteMovie = async (req, res) => {
@@ -287,4 +289,4 @@ const deleteMovie = async (req, res) => {
 };
 
 
-module.exports = { getDashboardStats, getAllUsers, editUser, deleteUser, getAllMovies,addMovie, editMovie, deleteMovie };
+module.exports = { getDashboardStats, getAllUsers, editUser, deleteUser, getAllMovies,addMovie, deleteMovie };
