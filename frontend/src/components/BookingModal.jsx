@@ -3,36 +3,51 @@ import axios from "axios";
 
 const BookingModal = ({ show, handleClose, selectedMovie, userId }) => {
     const [ticketCount, setTicketCount] = useState(1);
-    const [donation, setDonation] = useState(0);
-    const [ticketType, setTicketType] = useState("M-Ticket");
     const [loading, setLoading] = useState(false);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
     const [transactionId, setTransactionId] = useState("");
+    const [totalAmount, setTotalAmount] = useState(0);  // Initialize as 0
 
     const movieTitle = selectedMovie?.title || "Movie Name";
     const ticketPrice = selectedMovie?.price || 0;
-    const convenienceFee = 50; 
-    const totalAmount = (ticketCount * ticketPrice) + convenienceFee + donation;
+    const convenienceFee = 50;  // Fixed convenience fee
+
+    // ✅ FIX: Calculate total amount with convenience fee applied once
+    useEffect(() => {
+        setTotalAmount(ticketCount * ticketPrice + convenienceFee);
+    }, [ticketCount, ticketPrice]);
 
     const handlePayment = async () => {
         setLoading(true);
-    
         setTimeout(async () => {
             const fakeTransactionId = `TXN${Math.floor(Math.random() * 1000000)}`;
             setTransactionId(fakeTransactionId);
-    
+
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("You need to be logged in to make a payment.");
+                setLoading(false);
+                return;
+            }
+
             try {
-                const response = await axios.post("http://localhost:7001/api/orders/create", {
-                    userId,
-                    movieId: selectedMovie?._id,
-                    amount: totalAmount,
-                    transactionId: fakeTransactionId, // Send transactionId to backend
-                    status: "confirmed",
-                });
-    
+                const response = await axios.post(
+                    "http://localhost:7001/api/orders/create",
+                    {
+                        userId,
+                        movieId: selectedMovie?._id,
+                        transactionId: fakeTransactionId,
+                        quantity: ticketCount,
+                        // totalAmount,
+                        status: "confirmed",
+                    },
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+
                 if (response.status === 201) {
                     setPaymentSuccess(true);
-    
                     setTimeout(() => {
                         handleClose();
                         window.location.href = "/orders"; // Redirect to orders page
@@ -42,22 +57,21 @@ const BookingModal = ({ show, handleClose, selectedMovie, userId }) => {
                 console.error("Error creating order:", error);
                 alert("Failed to place order. Try again.");
             }
-    
             setLoading(false);
         }, 2000);
     };
-    
+
     return (
         <div className={`modal fade ${show ? "show d-block" : "d-none"}`} tabIndex="-1" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content rounded-3">
                     <div className="modal-body p-4">
                         {paymentSuccess ? (
-                            <div className="text-center">
+                            <div className="text-center" style={{ backgroundColor: "#f7f7f7", padding: "20px", borderRadius: "10px" }}>
                                 <h5 className="text-success fw-bold">Payment Successful</h5>
-                                <p>Movie: <strong>{movieTitle}</strong></p>
-                                <p>Transaction ID: <strong>{transactionId}</strong></p>
-                                <p>Redirecting to dashboard in 5s...</p>
+                                <p style={{ color: "black" }}>Movie: <strong>{movieTitle}</strong></p>
+                                <p style={{ color: "black" }}>Transaction ID: <strong>{transactionId}</strong></p>
+                                <p style={{ color: "black" }}>Redirecting to dashboard in 5s...</p>
                                 <button className="btn btn-primary" onClick={() => window.location.href = "/orders"}>
                                     CHECK ORDERS
                                 </button>
@@ -79,7 +93,7 @@ const BookingModal = ({ show, handleClose, selectedMovie, userId }) => {
                                 <div className="mt-3 text-dark">
                                     <div className="d-flex justify-content-between">
                                         <span>Total Ticket Price</span>
-                                        <span className="fw-bold">₹ {ticketCount * ticketPrice}</span>
+                                        <span className="fw-bold">₹ {ticketCount * ticketPrice}</span> 
                                     </div>
                                     <div className="d-flex justify-content-between">
                                         <span>Convenience Fee</span>

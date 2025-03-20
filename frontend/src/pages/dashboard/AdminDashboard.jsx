@@ -76,7 +76,7 @@ const AdminDashboard = () => {
               <div className="card text-bg-warning mb-3">
                 <div className="card-body">
                   <h5 className="card-title">Total Revenue</h5>
-                  <p className="card-text fs-3">${dashboardStats?.totalRevenue || 0}</p>
+                  <p className="card-text fs-3">₹{dashboardStats?.totalRevenue || 0}</p>
                 </div>
               </div>
             </div>

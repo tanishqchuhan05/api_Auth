@@ -8,6 +8,9 @@ import AdminMovies from './pages/dashboard/AdminMovies';
 import ProtectedRoute from './routes/ProtectedRoute';
 import MovieDetails from "./pages/MovieDetails";
 import MovieList from "./components/MovieList";
+import Orders from "./pages/Orders";
+import Profile from "./pages/Profile";
+
 
 function App() {
   return (
@@ -25,6 +28,11 @@ function App() {
         <Route path="/userdashboard" element={<ProtectedRoute role="user"><UserDashboard /></ProtectedRoute>} />
         <Route path="/admin/getalluser" element={<ProtectedRoute role="superAdmin"><UserManagement /></ProtectedRoute>} />
         <Route path="/admin/movies" element={<ProtectedRoute role="superAdmin"><AdminMovies /></ProtectedRoute>} /> 
+        <Route path="/profile" element={<Profile />} />
+
+{/* Add My Orders Route */}
+<Route path="/orders" element={<ProtectedRoute role="user"><Orders/></ProtectedRoute>} /> 
+
       </Routes>
     </Router>
   );

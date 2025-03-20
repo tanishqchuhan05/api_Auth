@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const MovieList = () => {
+const MovieList = ({ searchQuery }) => {
   const [movies, setMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
   const [error, setError] = useState(null);
@@ -28,6 +28,18 @@ const MovieList = () => {
     fetchMovies();
   }, []);
 
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      setFilteredMovies(
+        movies.filter((movie) =>
+          movie.title.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredMovies(movies);
+    }
+  }, [searchQuery, movies]);
+
   const filterMovies = (category) => {
     setActiveFilter(category);
     if (category === "All Movies") {
@@ -38,7 +50,7 @@ const MovieList = () => {
   };
 
   const handleMovieClick = (movieId) => {
-    navigate(`/movies/${movieId}`); // Redirects to movie details page
+    navigate(`/movies/${movieId}`);
   };
 
   return (
