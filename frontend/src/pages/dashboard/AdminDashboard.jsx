@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../components/Navbar"; // Import Navbar
-import axios from "axios";
+import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import   getAdminDashboardStats  from "../../Services/adminDashboardService"; // ✅ Import centralized API function
+import { APP_ROUTES } from "../../utils/appRoutes";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -12,25 +13,10 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchDashboardStats = async () => {
       try {
-        const token = localStorage.getItem("token"); // Retrieve token
-
-        if (!token) {
-          throw new Error("No token found. Please log in.");
-        }
-
-        const response = await axios.get("http://localhost:7001/api/admin/dashboard", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include auth token
-          },
-        });
-
-        console.log("📡 API Response:", response.data); // Debugging log
-
-        setDashboardStats(response.data.data);
+        const stats = await getAdminDashboardStats(); // ✅ Use centralized API function
+        setDashboardStats(stats);
       } catch (err) {
-        console.error("❌ API Error:", err.response?.data?.message || err.message); // Debugging log
-        setError(err.response?.data?.message || "Failed to fetch stats");
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -41,7 +27,7 @@ const AdminDashboard = () => {
 
   return (
     <>
-      <Navbar /> {/* ✅ Add Navbar at the top */}
+      <Navbar />
       <div className="container mt-4">
         <h2 className="text-center mb-4">Admin Dashboard</h2>
 
@@ -51,17 +37,15 @@ const AdminDashboard = () => {
           <p className="text-danger text-center">{error}</p>
         ) : (
           <div className="row">
-            {/* Total Users */}
             <div className="col-md-3">
-              <div className="card text-bg-primary mb-3">
-                <div className="card-body" onClick={() => navigate("/admin/getalluser")}>
+              <div className="card text-bg-primary mb-3" onClick={() => navigate(APP_ROUTES.ADMIN_USERS)}>
+                <div className="card-body">
                   <h5 className="card-title">Total Users</h5>
                   <p className="card-text fs-3">{dashboardStats?.totalUser || 0}</p>
                 </div>
               </div>
             </div>
 
-            {/* Total Orders */}
             <div className="col-md-3">
               <div className="card text-bg-success mb-3">
                 <div className="card-body">
@@ -71,7 +55,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Total Revenue */}
             <div className="col-md-3">
               <div className="card text-bg-warning mb-3">
                 <div className="card-body">
@@ -81,10 +64,9 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* ✅ Total Movies - New Card */}
             <div className="col-md-3">
-              <div className="card text-bg-info mb-3">
-                <div className="card-body" onClick={() => navigate("/admin/movies")}>
+              <div className="card text-bg-info mb-3" onClick={() => navigate(APP_ROUTES.ADMIN_MOVIES)}>
+                <div className="card-body">
                   <h5 className="card-title">Total Movies</h5>
                   <p className="card-text fs-3">{dashboardStats?.totalMovies || 0}</p>
                 </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import movieListService from "../Services/movieListService";
 
 const MovieList = ({ searchQuery }) => {
   const [movies, setMovies] = useState([]);
@@ -9,18 +9,32 @@ const MovieList = ({ searchQuery }) => {
   const [activeFilter, setActiveFilter] = useState("All Movies");
   const navigate = useNavigate();
 
+
+  const getImageUrl = (imagePath) => {
+  if (!imagePath) return "/default-movie.jpg"; // Fallback image
+
+  const baseUrl = process.env.REACT_APP_API_URL?.replace(/\/api\/$/, "");
+
+  if (imagePath.startsWith("/uploads")) {
+    return `${baseUrl}${imagePath}`; // Ensures correct URL
+  }
+
+  if (imagePath.startsWith("http")) {
+    return imagePath; // Already a full URL
+  }
+
+  return `${baseUrl}/uploads/${imagePath}`;
+};
+
+
+  // Fetch movies on component mount
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await axios.get("http://localhost:7001/api/movies", {
-          withCredentials: true,
-        });
-
-        console.log("Movies API Response:", response.data);
-        setMovies(response.data);
-        setFilteredMovies(response.data); // Default to all movies
-      } catch (error) {
-        console.error("Error fetching movies:", error);
+        const data = await movieListService.getAllMovies();
+        setMovies(data);
+        setFilteredMovies(data);
+      } catch (err) {
         setError("Failed to fetch movies. Please try again.");
       }
     };
@@ -28,6 +42,7 @@ const MovieList = ({ searchQuery }) => {
     fetchMovies();
   }, []);
 
+  // Filter movies when searchQuery changes
   useEffect(() => {
     if (searchQuery.trim()) {
       setFilteredMovies(
@@ -40,15 +55,17 @@ const MovieList = ({ searchQuery }) => {
     }
   }, [searchQuery, movies]);
 
+  // Filter movies by category
   const filterMovies = (category) => {
     setActiveFilter(category);
-    if (category === "All Movies") {
-      setFilteredMovies(movies);
-    } else {
-      setFilteredMovies(movies.filter((movie) => movie.category.trim() === category));
-    }
+    setFilteredMovies(
+      category === "All Movies"
+        ? movies
+        : movies.filter((movie) => movie.category.trim() === category)
+    );
   };
 
+  // Navigate to movie details page
   const handleMovieClick = (movieId) => {
     navigate(`/movies/${movieId}`);
   };
@@ -81,12 +98,12 @@ const MovieList = ({ searchQuery }) => {
           filteredMovies.map((movie) => (
             <div key={movie._id} className="col-md-3 mb-4">
               <div
-                className="card shadow-sm cursor-pointer"
+                className="card shadow-sm"
                 onClick={() => handleMovieClick(movie._id)}
                 style={{ cursor: "pointer" }}
               >
                 <img
-                  src={movie.image.startsWith("/uploads") ? `http://localhost:7001${movie.image}` : movie.image}
+                  src={getImageUrl(movie.image)}
                   alt={movie.title}
                   className="card-img-top"
                   style={{ height: "500px", objectFit: "cover" }}

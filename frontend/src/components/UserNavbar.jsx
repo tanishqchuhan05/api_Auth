@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo.png";
+import { APP_ROUTES } from "../utils/appRoutes";
 
 const UserNavbar = ({ onSearch }) => {
   const [userName, setUserName] = useState(null);
@@ -18,7 +19,7 @@ const UserNavbar = ({ onSearch }) => {
   const handleLogout = () => {
     localStorage.removeItem("userName");
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate(APP_ROUTES.LOGIN);
   };
 
   const handleSearchChange = (e) => {
