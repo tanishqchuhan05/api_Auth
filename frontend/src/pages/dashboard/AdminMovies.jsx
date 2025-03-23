@@ -46,7 +46,7 @@ const AdminMovies = () => {
         alert("Please fill in all fields.");
         return;
       }
-
+      console.log("hi")
       const addedMovie = await apiService.addMovie(newMovie); // Use centralized service
       setMovies((prevMovies) => [...prevMovies, addedMovie]);
       setShowModal(false);
