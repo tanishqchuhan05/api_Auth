@@ -14,18 +14,18 @@ dotenv.config();
 
 // Connect to Database
 dbConnect().then(() => {
-  console.log("🔥 Connected to MongoDB");
-  createSuperAdmin(); // ✅ Call AFTER DB connection
+  console.log("Connected to MongoDB");
+  createSuperAdmin(); // Call AFTER DB connection
 });
 
 const app = express();
 
-// ✅ FIXED CORS CONFIGURATION
+// FIXED CORS CONFIGURATION
 const corsOptions = {
-  origin: "http://localhost:3000", // ✅ Allow frontend URL
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // ✅ Fixed methods
-  allowedHeaders: ["Content-Type", "Authorization"], // ✅ Allow token headers
-  credentials: true, // ✅ Required for authentication
+  origin: "http://localhost:3000", //Allow frontend URL
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Fixed methods
+  allowedHeaders: ["Content-Type", "Authorization"], // Allow token headers
+  credentials: true, // Required for authentication
 };
 app.use(cors(corsOptions));
 
@@ -49,5 +49,5 @@ app.use("/api/orders", orderRoutes);
 // Start the server
 const PORT = process.env.PORT || 7001;
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });

@@ -1,21 +1,41 @@
 import React from "react";
 
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return "/default-movie.jpg"; 
+
+  const baseUrl = process.env.REACT_APP_API_URL?.replace(/\/api\/$/, ""); 
+
+  if (imagePath.startsWith("/uploads")) {
+    return `${baseUrl}${imagePath}`; 
+  }
+
+  if (imagePath.startsWith("http")) {
+    return imagePath; 
+  }
+
+  return `${baseUrl}/uploads/${imagePath}`;
+};
+
 const OrderCard = ({ order }) => {
-  console.log(order,"order")
+  console.log(order, "order");
+
   return (
     <div className="card mb-3 shadow-sm">
       <div className="row g-0">
         {/* Movie Poster */}
         <div className="col-md-4">
           <img
-            src={`http://localhost:7001${order?.movieId?.image}` } // ✅ Use 'image' from the database
+            src={getImageUrl(order?.movieId?.image)} 
             alt={order?.movieId?.title}
             className="img-fluid rounded-start"
             style={{ height: "180px", objectFit: "cover" }}
-            onError={(e) => { e.target.src = "/default-movie.jpg"; }} // Set default image if broken
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/default-movie.jpg"; 
+            }}
           />
         </div>
-        
+
         {/* Order Details */}
         <div className="col-md-8">
           <div className="card-body">
@@ -29,6 +49,5 @@ const OrderCard = ({ order }) => {
     </div>
   );
 };
-
 
 export default OrderCard;

@@ -173,7 +173,8 @@ const getAllMovies = async (req, res) => {
 const addMovie = async (req, res) => {
     try {
         const { title, price, releaseDate, description, genre, category, isUpcoming } = req.body;
-
+        console.log(req.body, "==========678765678767");
+        console.log(req.file, "==========89898999");
         // Ensure an image was uploaded
         if (!req.file) {
             return APIResponse.error(res, {
