@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import OrderCard from "../components/OrderCard";
+import getOrders from "../Services/orderService";
+
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -8,12 +9,8 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const token = localStorage.getItem("token"); // Get auth token
-        const res = await axios.get("http://localhost:7001/api/orders", { // Updated endpoint
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log(res)
-        setOrders(res.data.orders);
+        const data = await getOrders(); // Use centralized service
+        setOrders(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       }

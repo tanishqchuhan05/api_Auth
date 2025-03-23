@@ -1,8 +1,9 @@
+// AdminMovies.js
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { FaTrash } from "react-icons/fa";
 import Navbar from "../../components/Navbar";
+import apiService from "../../Services/adminMovieService"; // Import the centralized API service
 
 const AdminMovies = () => {
   const navigate = useNavigate();
@@ -18,24 +19,16 @@ const AdminMovies = () => {
     poster_path: null,
   });
 
-  const genres = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Romance", "Thriller", "Crime"];
-  const categories = ["Now Playing", "Latest Movies", "Upcoming Movies"];
-
   useEffect(() => {
-    fetchMovies();
+    loadMovies();
   }, []);
 
-  const fetchMovies = async () => {
+  const loadMovies = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:7001/api/admin/movies", {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
-
-      setMovies(response.data.data);
+      const moviesData = await apiService.fetchMovies(); // Use centralized service
+      setMovies(moviesData);
     } catch (error) {
-      console.error("Failed to fetch movies:", error);
+      alert("Failed to fetch movies.");
     }
   };
 
@@ -49,90 +42,51 @@ const AdminMovies = () => {
 
   const handleAddMovie = async () => {
     try {
-      const token = localStorage.getItem("token");
-
-      if (!newMovie.title || !newMovie.description || !newMovie.genre || !newMovie.category || !newMovie.releaseDate || !newMovie.price || !newMovie.poster_path) {
+      if (Object.values(newMovie).some((field) => !field)) {
         alert("Please fill in all fields.");
         return;
       }
-
-      const formData = new FormData();
-      formData.append("title", newMovie.title);
-      formData.append("description", newMovie.description);
-      formData.append("genre", newMovie.genre);
-      formData.append("category", newMovie.category);
-      formData.append("releaseDate", newMovie.releaseDate);
-      formData.append("price", newMovie.price);
-      formData.append("image", newMovie.poster_path);
-
-      const response = await axios.post("http://localhost:7001/api/admin/addmovie", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      });
-
-      setMovies([...movies, response.data.data]);
-
+      console.log("hi")
+      const addedMovie = await apiService.addMovie(newMovie); // Use centralized service
+      setMovies((prevMovies) => [...prevMovies, addedMovie]);
       setShowModal(false);
-      setNewMovie({
-        title: "",
-        description: "",
-        genre: "",
-        category: "",
-        releaseDate: "",
-        price: "",
-        poster_path: null,
-      });
-
+      resetNewMovie();
       alert("Movie added successfully!");
     } catch (error) {
-      console.error("Error adding movie:", error);
-      alert("Failed to add movie. Please try again.");
+      alert("Failed to add movie.");
     }
   };
 
   const handleDeleteMovie = async (movieId) => {
     try {
-      const token = localStorage.getItem("token");
-  
-      if (!token) {
-        alert("Unauthorized! Please log in.");
-        return;
-      }
-  
-      // Confirm before deletion
       const confirmDelete = window.confirm("Are you sure you want to delete this movie?");
       if (!confirmDelete) return;
-  
-      // Make the API call
-      const response = await axios.delete(`http://localhost:7001/api/admin/movies/${movieId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
-  
-      if (response.status === 200) {
-        alert("Movie deleted successfully!");
-        
-        // Update the state to remove deleted movie
-        setMovies((prevMovies) => prevMovies.filter((movie) => movie._id !== movieId));
-      } else {
-        alert(response.data.message || "Failed to delete movie.");
-      }
+
+      await apiService.deleteMovie(movieId); // Use centralized service
+      setMovies((prevMovies) => prevMovies.filter((movie) => movie._id !== movieId));
+      alert("Movie deleted successfully!");
     } catch (error) {
-      console.error("Error deleting movie:", error.response?.data || error.message);
-      alert("Failed to delete movie. Check console for details.");
+      alert("Failed to delete movie.");
     }
   };
-  
+
+  const resetNewMovie = () => {
+    setNewMovie({
+      title: "",
+      description: "",
+      genre: "",
+      category: "",
+      releaseDate: "",
+      price: "",
+      poster_path: null,
+    });
+  };
 
   return (
     <>
       <Navbar />
       <div className="container mt-4">
         <h2 className="mb-4 text-center">🎬 Movie Management</h2>
-
         <div className="d-flex justify-content-end mb-3">
           <button className="btn btn-success" onClick={() => setShowModal(true)}>
             ➕ Add New Movie
@@ -145,9 +99,7 @@ const AdminMovies = () => {
               <div key={movie._id} className="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div className="card h-100 shadow-sm border-0 rounded d-flex flex-column">
                   <img
-                    src={movie.image && movie.image.startsWith("http")
-                      ? movie.image
-                      : `http://localhost:7001${movie.image}`}
+                    src={movie.image.startsWith("http") ? movie.image : `http://localhost:7001${movie.image}`}
                     alt={movie.title}
                     className="card-img-top"
                     style={{ objectFit: "cover", height: "500px" }}
@@ -159,13 +111,11 @@ const AdminMovies = () => {
                       {movie.releaseDate ? new Date(movie.releaseDate).toLocaleDateString() : "N/A"}
                     </p>
                     <p className="card-text">
-                      <strong>Price:</strong> {movie.price ? `₹${movie.price}` : "N/A"}
+                      <strong>Price:</strong> ₹{movie.price}
                     </p>
-                    <div className="mt-auto">
-                      <button className="btn btn-danger btn-sm" onClick={() => handleDeleteMovie(movie._id)}>
-                        <FaTrash /> Delete
-                      </button>
-                    </div>
+                    <button className="btn btn-danger btn-sm mt-auto" onClick={() => handleDeleteMovie(movie._id)}>
+                      <FaTrash /> Delete
+                    </button>
                   </div>
                 </div>
               </div>
@@ -186,24 +136,16 @@ const AdminMovies = () => {
                 <div className="modal-body">
                   <input type="text" className="form-control mb-2" name="title" placeholder="Title" value={newMovie.title} onChange={handleInputChange} />
                   <textarea className="form-control mb-2" name="description" placeholder="Description" value={newMovie.description} onChange={handleInputChange}></textarea>
-
-                  <select className="form-control mb-2" name="genre" value={newMovie.genre} onChange={handleInputChange}>
-                    <option value="">Select Genre</option>
-                    {genres.map((genre, index) => (
-                      <option key={index} value={genre}>{genre}</option>
-                    ))}
-                  </select>
-
-                  <select className="form-control mb-2" name="category" value={newMovie.category} onChange={handleInputChange}>
-                    <option value="">Select Category</option>
-                    {categories.map((category, index) => (
-                      <option key={index} value={category}>{category}</option>
-                    ))}
-                  </select>
-
                   <input type="date" className="form-control mb-2" name="releaseDate" value={newMovie.releaseDate} onChange={handleInputChange} />
                   <input type="number" className="form-control mb-2" name="price" placeholder="Price (₹)" value={newMovie.price} onChange={handleInputChange} />
                   <input type="file" className="form-control mb-2" name="poster_path" accept="image/*" onChange={handleInputChange} />
+                  <input type="text" className="form-control mb-2" name="genre" placeholder="Genre" value={newMovie.genre} onChange={handleInputChange} />
+                  <select className="form-control mb-2" name="category" value={newMovie.category} onChange={handleInputChange}>
+                    <option value="">Select Category</option>
+                    <option value="Now Playing">Now Playing</option>
+                    <option value="Latest">Latest</option>
+                    <option value="Upcoming">Upcoming</option>
+                  </select>
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>

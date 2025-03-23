@@ -1,101 +1,56 @@
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { APP_ROUTES } from "../../utils/appRoutes"; 
+import { loginValidationSchema } from "../../Validations/loginValidation"; 
+import ROLES from "../../utils/roles"; 
+import { loginUser } from "../../Services/authService";
 
 const Login = () => {
   const navigate = useNavigate();
-
   const [passwordVisible, setPasswordVisible] = useState(false);
-
-  // Validation schema
-  const validationSchema = Yup.object({
-    email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
-    password: Yup.string().required("Password is required"),
-  });
 
   // Handle form submission
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:7001/api/auth/login",
-        values
-      );
+      const data = await loginUser(values); // Call the API function
 
-      // console.log("🔑 Token received:", response.data.token); // Log received token
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("adminName", data.user.username);
+      localStorage.setItem("role", data.user.role);
 
-      if (!response.data.token) {
-        throw new Error("No token received from server.");
-      }
-
-      localStorage.setItem("token", response.data.token); // Store token
-      localStorage.setItem("adminName", response.data.user.username);
-
-      // ✅ Ensure `user` exists before accessing `role`
-      if (response.data.user && response.data.user.role) {
-        localStorage.setItem("role", response.data.user.role);
-        console.log(
-          "✅ Token & Role saved:",
-          localStorage.getItem("token"),
-          localStorage.getItem("role")
-        );
-
-        //navigate("/admindashboard"); // Redirect after login
-        if (response.data.user.role === "superAdmin") {
-          navigate("/admindashboard");
-        } else {
-          navigate("/userdashboard");
-        }
-      }
+      // Navigate based on role
+      const dashboardRoute =
+        data.user.role === ROLES.SUPER_ADMIN
+          ? APP_ROUTES.ADMIN_DASHBOARD
+          : APP_ROUTES.USER_DASHBOARD;
+      navigate(dashboardRoute);
     } catch (error) {
-      console.error("❌ Login Error:", error.response?.data || error.message);
-      setErrors({ general: error.response?.data?.message || "Login failed" });
+      setErrors({ general: error });
     }
     setSubmitting(false);
   };
 
-  // Immediately check if token exists
-  //console.log("🛠️ Token in localStorage after login:", localStorage.getItem("token"));
-
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div
-        className="card shadow-lg p-4"
-        style={{ width: "400px", borderRadius: "10px" }}
-      >
+      <div className="card shadow-lg p-4" style={{ width: "400px", borderRadius: "10px" }}>
         <h2 className="text-center text-primary mb-4">Login</h2>
 
         <Formik
           initialValues={{ email: "", password: "" }}
-          validationSchema={validationSchema}
+          validationSchema={loginValidationSchema}
           onSubmit={handleSubmit}
         >
           {({ isSubmitting, errors }) => (
             <Form>
-              {errors.general && (
-                <p className="text-danger text-center">{errors.general}</p>
-              )}
+              {errors.general && <p className="text-danger text-center">{errors.general}</p>}
 
-              {/* Email */}
               <div className="mb-3">
                 <label className="form-label">Email</label>
-                <Field
-                  type="email"
-                  name="email"
-                  className="form-control"
-                  placeholder="Enter email"
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-danger"
-                />
+                <Field type="email" name="email" className="form-control" placeholder="Enter email" />
+                <ErrorMessage name="email" component="div" className="text-danger" />
               </div>
 
-              {/* Password */}
               <div className="mb-3 position-relative">
                 <label className="form-label">Password</label>
                 <div className="input-group">
@@ -110,32 +65,19 @@ const Login = () => {
                     onClick={() => setPasswordVisible(!passwordVisible)}
                     style={{ cursor: "pointer" }}
                   >
-                    <i
-                      className={`fa ${
-                        passwordVisible ? "fa-eye-slash" : "fa-eye"
-                      }`}
-                    ></i>
+                    <i className={`fa ${passwordVisible ? "fa-eye-slash" : "fa-eye"}`}></i>
                   </span>
                 </div>
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-danger"
-                />
+                <ErrorMessage name="password" component="div" className="text-danger" />
               </div>
-              {/* Submit Button */}
-              <button
-                type="submit"
-                className="btn btn-primary w-100"
-                disabled={isSubmitting}
-              >
+
+              <button type="submit" className="btn btn-primary w-100" disabled={isSubmitting}>
                 {isSubmitting ? "Logging in..." : "Login"}
               </button>
 
-              {/* Don't have an account? */}
               <p className="text-center mt-3">
                 Don't have an account?{" "}
-                <Link to="/" className="text-decoration-none">
+                <Link to={APP_ROUTES.HOME} className="text-decoration-none">
                   Sign Up
                 </Link>
               </p>

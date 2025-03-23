@@ -1,81 +1,47 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Navbar from "../components/Navbar";
+import profileService from "../Services/profileService";
+
 
 const Profile = () => {
-  const [user, setUser] = useState({
-    username: "",  // Corrected to match API field
-    email: "",
-    role: "",
-  });
-
+  const [user, setUser] = useState({ username: "", email: "", role: "" });
   const [isEditing, setIsEditing] = useState(false);
 
-  // Fetch user profile on mount
   useEffect(() => {
     fetchUserProfile();
   }, []);
 
-  // Function to fetch the user profile
   const fetchUserProfile = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("No token found. User is not logged in.");
-        return;
-      }
-
-      const response = await axios.get("http://localhost:7001/api/users/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      console.log("Profile Data:", response.data);
+      const data = await profileService.getUserProfile(); // Correct API call
       setUser({
-        username: response.data.data.username,  // Corrected field
-        email: response.data.data.email,
-        role: response.data.data.role,
+        username: data.data.username,
+        email: data.data.email,
+        role: data.data.role,
       });
     } catch (error) {
-      console.error("Failed to fetch profile:", error.response?.data || error);
+      console.error("Error fetching profile:", error);
     }
   };
 
-  // Handle changes to the username input field
   const handleChange = (e) => {
-    setUser((prev) => ({
-      ...prev,
-      username: e.target.value, // Corrected field name
-    }));
+    setUser((prev) => ({ ...prev, username: e.target.value }));
   };
 
-  // Handle saving the profile changes
   const handleSave = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.put(
-        "http://localhost:7001/api/users/profile/update",
-        { username: user.username }, // Send updated username
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      // Update state with the latest name
-      setUser((prev) => ({
-        ...prev,
-        username: response.data.data.username, // Set updated username
-      }));
-
+      await profileService.updateUserProfile(user.username); // Correct API call
       setIsEditing(false);
       alert("Profile updated successfully!");
     } catch (error) {
-      console.error("Failed to update profile:", error.response?.data || error);
+      console.error("Update failed:", error);
       alert("Failed to update profile.");
     }
   };
 
   return (
     <>
-      <Navbar /> {/* Assuming you have a Navbar component */}
-      
+      <Navbar />
       <div className="container mt-5">
         <h2 className="text-center mb-4">👤 My Profile</h2>
         <div className="card shadow-lg p-4">
@@ -84,7 +50,6 @@ const Profile = () => {
             <input
               type="text"
               className="form-control"
-              name="username" // Changed to match API response
               value={user.username}
               onChange={handleChange}
               disabled={!isEditing}
@@ -93,22 +58,12 @@ const Profile = () => {
 
           <div className="mb-3">
             <label className="form-label">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              value={user.email}
-              disabled
-            />
+            <input type="email" className="form-control" value={user.email} disabled />
           </div>
 
           <div className="mb-3">
             <label className="form-label">Role</label>
-            <input
-              type="text"
-              className="form-control"
-              value={user.role}
-              disabled
-            />
+            <input type="text" className="form-control" value={user.role} disabled />
           </div>
 
           <div className="text-center">
