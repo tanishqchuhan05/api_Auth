@@ -6,7 +6,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 const adminMovieService = {
   fetchMovies: async () => {
     try {
-      const response = await axiosInstance.get(API_URL + "/admin/movies");
+      const response = await axiosInstance.get(API_URL + "admin/movies");
       return response.data.data;
     } catch (error) {
       console.error("Error fetching movies:", error);
