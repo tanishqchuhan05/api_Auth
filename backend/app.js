@@ -28,8 +28,10 @@ dbConnect().then(() => {
 // }));
 
 const allowedOrigins = [
-  "http://localhost:3000",
+  // "http://localhost:3000",
   "https://api-auth-la58.vercel.app",
+  "https://api-auth-la58-tanishqs-projects-0428fe8d.vercel.app",
+  
   // ✅ Add frontend URL
 ];
 
