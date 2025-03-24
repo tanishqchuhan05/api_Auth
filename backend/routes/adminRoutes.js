@@ -37,7 +37,8 @@ router.delete("/deleteUser/:id", adminMiddleware, deleteUser);
 
 // ✅ Movie Management Routes
 router.get("/movies", adminMiddleware, getAllMovies);       // Get all movies
-router.post("/addmovie", adminMiddleware, upload.single("poster_path"), addMovie);  // Add a new movie
+// router.post("/addmovie", adminMiddleware, upload.single("poster_path"), addMovie);  // Add a new movie
+router.post("/addmovie", adminMiddleware, addMovie); 
 // router.put("/movies/:id", adminMiddleware, upload.single("image"), editMovie); // Edit movie
 router.delete("/movies/:id", adminMiddleware, deleteMovie); // Delete movie
 
