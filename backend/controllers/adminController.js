@@ -7,6 +7,16 @@ const Movie = require("../models/movieModel");
 // ✅ Get Admin Dashboard Statistics
 const getDashboardStats = async (req, res) => {
     try {
+        return APIResponse.success(res, {
+            status: 200,
+            message: "Admin dashboard stats retrieved",
+            data: {
+                totalUser: [],
+                totalOrder: [],
+                totalRevenue: 0,
+                totalMovies: []
+            }
+        });
         // Count total users
         const totalUser = await User.countDocuments({ role: { $in: ["user", "admin", "manager"] } });
 
