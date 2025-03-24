@@ -35,7 +35,7 @@ app.use(
 
 
 app.get("/test", (req, res) => {
-  res.json({ message: "Backend is running" });
+  res.json({ message: "Backend app is running" });
 });
 
 // ✅ Routes
