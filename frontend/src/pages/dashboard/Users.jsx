@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -14,7 +15,7 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("token"); // Retrieve token
-      const response = await axios.get("http://localhost:7001/api/admin/getallusers", {
+      const response = await axiosInstance.get(API_URL + "admin/getallusers", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
