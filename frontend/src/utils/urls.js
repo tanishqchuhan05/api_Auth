@@ -1,5 +1,5 @@
 const baseUrl = process.env.REACT_APP_API_URL
-// console.log("baseUrl", baseUrl)
+console.log("baseUrl", baseUrl,process.env)
 const URLS = {
     USER: {
         REGISTER: `${baseUrl}auth/register`,
