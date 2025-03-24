@@ -21,10 +21,30 @@ dbConnect().then(() => {
 
 
 // FIXED CORS CONFIGURATION
+// app.use(cors({
+//   origin: ["http://localhost:3000", "https://api-auth-la58.vercel.app"], 
+//   methods: "GET, POST, PUT, DELETE",
+//   allowedHeaders: "Content-Type, Authorization",
+//   credentials: true
+// }));
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://api-auth-la58.vercel.app",
+  "https://api-auth-iota.vercel.app", // ✅ Add backend URL if needed
+  "https://api-auth-la58-bn6td80kh-tanishqs-projects-0428fe8d.vercel.app" // ✅ Add frontend URL
+];
+
 app.use(cors({
-  origin: ["http://localhost:3000", "https://api-auth-la58.vercel.app"], 
-  methods: "GET, POST, PUT, DELETE",
-  allowedHeaders: "Content-Type, Authorization",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
 
