@@ -22,8 +22,8 @@ const app = express();
 
 // FIXED CORS CONFIGURATION
 const corsOptions = {
-  origin: "https://api-auth-la58.vercel.app/", //Allow frontend URL
-  // methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Fixed methods
+  origin: ["http://localhost:3000", "https://api-auth-la58.vercel.app/"], //Allow frontend URL
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Fixed methods
   allowedHeaders: ["Content-Type", "Authorization"], // Allow token headers
   credentials: true, // Required for authentication
 };
