@@ -41,6 +41,8 @@ app.use("/api/orders", orderRoutes);
 
 const PORT = process.env.PORT;
 // ✅ Export app for serverless deployment
-app.listen(PORT, () => {
-  console.log("Server is running");
-});
+// app.listen(PORT, () => {
+//   console.log("Server is running");
+// });
+
+module.exports = app;
