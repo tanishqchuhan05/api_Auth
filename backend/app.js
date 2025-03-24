@@ -24,7 +24,6 @@ dbConnect().then(() => {
 
 const corsOptions = {
   origin: [
-    "http://localhost:3000", 
     "https://api-auth-la58.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
