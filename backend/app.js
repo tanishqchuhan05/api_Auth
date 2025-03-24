@@ -21,18 +21,26 @@ dbConnect().then(() => {
 
 
 // FIXED CORS CONFIGURATION
+app.use(cors({
+  origin: ["http://localhost:3000", "https://api-auth-la58.vercel.app"], 
+  methods: "GET, POST, PUT, DELETE",
+  allowedHeaders: "Content-Type, Authorization",
+  credentials: true
+}));
 
-const corsOptions = {
-  origin: [
-    "https://api-auth-la58.vercel.app",
-    "https://api-auth-la58-bn6td80kh-tanishqs-projects-0428fe8d.vercel.app"
-  ],
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true, // Allow cookies and authentication
-};
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); 
+
+
+// const corsOptions = {
+//   origin: [
+//     "https://api-auth-la58.vercel.app",
+//     "https://api-auth-la58-bn6td80kh-tanishqs-projects-0428fe8d.vercel.app"
+//   ],
+//   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+//   allowedHeaders: ["Content-Type", "Authorization"],
+//   credentials: true, // Allow cookies and authentication
+// };
+// app.use(cors(corsOptions));
+// app.options("*", cors(corsOptions)); 
 
 
 app.get("/test", (req, res)=>{
