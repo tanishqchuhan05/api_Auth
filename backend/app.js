@@ -7,7 +7,7 @@ const createSuperAdmin = require("../backend/utilities/createSuperAdmin");
 const adminRoutes = require("./routes/adminRoutes");
 const userRoutes = require("./routes/userRoutes");
 const movieRoutes = require("./routes/movieRoutes");
-const orderRoutes = require("./routes/orderRoutes");  
+const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
 // Load environment variables from .env file
@@ -19,10 +19,9 @@ dbConnect().then(() => {
   createSuperAdmin(); // Call AFTER DB connection
 });
 
-
 // FIXED CORS CONFIGURATION
 // app.use(cors({
-//   origin: ["http://localhost:3000", "https://api-auth-la58.vercel.app"], 
+//   origin: ["http://localhost:3000", "https://api-auth-la58.vercel.app"],
 //   methods: "GET, POST, PUT, DELETE",
 //   allowedHeaders: "Content-Type, Authorization",
 //   credentials: true
@@ -31,24 +30,23 @@ dbConnect().then(() => {
 const allowedOrigins = [
   "http://localhost:3000",
   "https://api-auth-la58.vercel.app",
-  "https://api-auth-iota.vercel.app", // ✅ Add backend URL if needed
-  "https://api-auth-la58-bn6td80kh-tanishqs-projects-0428fe8d.vercel.app" // ✅ Add frontend URL
+  // ✅ Add frontend URL
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-}));
-
-
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 // const corsOptions = {
 //   origin: [
@@ -60,17 +58,15 @@ app.use(cors({
 //   credentials: true, // Allow cookies and authentication
 // };
 // app.use(cors(corsOptions));
-// app.options("*", cors(corsOptions)); 
+// app.options("*", cors(corsOptions));
 
-
-app.get("/test", (req, res)=>{
-  res.json({message: "backend is running"});
-})
+app.get("/test", (req, res) => {
+  res.json({ message: "backend is running" });
+});
 
 const path = require("path");
 // Serve images from a folder where uploaded images are stored
-app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Middleware
 app.use(express.json());
