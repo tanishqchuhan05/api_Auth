@@ -22,13 +22,11 @@ dbConnect().then(() => {
 });
 
 
-app.use(cors({ origin: process.env.FRONTEND_URL, }));
-console.log(process.env.FRONTEND_URL)
+app.use(cors({ origin: "*" }));
 app.options("*",cors())
 
 
 app.get("/test", (req, res) => {
-  console.log("Test route hit");
   res.json({ message: "Backend is running" });
 });
 
