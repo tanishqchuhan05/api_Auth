@@ -22,8 +22,16 @@ dbConnect().then(() => {
 });
 
 
-app.use(cors({ origin: "*" }));
-app.options("*",cors())
+// app.use(cors({ origin: "*" }));
+// app.options("*",cors())
+// Allow all origins
+app.use(cors());
+// Alternative (Explicitly allow all origins)
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 
 app.get("/test", (req, res) => {
