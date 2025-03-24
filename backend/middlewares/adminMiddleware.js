@@ -3,10 +3,10 @@ const JWTHandler = require("../utilities/jwtHandler");
 const User = require("../models/userModel");
 
 const adminMiddleware = async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // ✅ Allow frontend origin
-    res.header("Access-Control-Allow-Credentials", "true"); // ✅ Allow authentication headers
-    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE");
-    res.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
+    // res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // ✅ Allow frontend origin
+    // res.header("Access-Control-Allow-Credentials", "true"); // ✅ Allow authentication headers
+    // res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE");
+    // res.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
 
     const authToken = req.headers.authorization;
     if (!authToken) {
