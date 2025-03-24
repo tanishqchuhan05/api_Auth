@@ -24,13 +24,13 @@ dbConnect().then(() => {
 
 const corsOptions = {
   origin: [
-    "https://api-auth-la58.vercel.app"
+    "https://api-auth-la58.vercel.app",
+    "https://api-auth-la58-bn6td80kh-tanishqs-projects-0428fe8d.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true, // Allow cookies and authentication
 };
-
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions)); 
 
