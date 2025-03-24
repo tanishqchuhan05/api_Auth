@@ -29,6 +29,7 @@ const corsOptions = {
   credentials: true, // Required for authentication
 };
 // app.use(cors(corsOptions));
+app.use(cors(corsOptions))
 app.options("*", cors(corsOptions));
 
 
