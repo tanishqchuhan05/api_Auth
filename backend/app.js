@@ -23,12 +23,15 @@ const app = express();
 // FIXED CORS CONFIGURATION
 const corsOptions = {
   origin: ["http://localhost:3000", 
-    "https://api-auth-la58.vercel.app/"], //Allow frontend URL
+    "https://api-auth-la58.vercel.app"], //Allow frontend URL
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Fixed methods
   allowedHeaders: ["Content-Type", "Authorization"], // Allow token headers
   credentials: true, // Required for authentication
 };
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
+
 
 app.get("/test", (req, res)=>{
   res.json({message: "backend is running"});
