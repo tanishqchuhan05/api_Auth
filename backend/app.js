@@ -29,7 +29,7 @@ const corsOptions = {
 };
 // app.use(cors(corsOptions));
 app.use(cors(corsOptions))
-app.options("*", cors(corsOptions));
+
 
 
 
@@ -53,7 +53,9 @@ app.use("/api/movies", movieRoutes);
 app.use("/api/orders", orderRoutes);
 
 // Start the server
-const PORT = process.env.PORT || 7001;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// const PORT = process.env.PORT || 7001;
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });
+
+export default app;
