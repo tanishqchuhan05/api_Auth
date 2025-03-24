@@ -9,6 +9,7 @@ const userRoutes = require("./routes/userRoutes");
 const movieRoutes = require("./routes/movieRoutes");
 const orderRoutes = require("./routes/orderRoutes");  
 
+const app = express();
 // Load environment variables from .env file
 dotenv.config();
 
@@ -18,7 +19,6 @@ dbConnect().then(() => {
   createSuperAdmin(); // Call AFTER DB connection
 });
 
-const app = express();
 
 // FIXED CORS CONFIGURATION
 const corsOptions = {
