@@ -29,7 +29,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-
+app.get("/test", (req, res)=>{
+  res.json({message: "backend is running"});
+})
 
 const path = require("path");
 // Serve images from a folder where uploaded images are stored
