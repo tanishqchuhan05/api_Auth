@@ -1,4 +1,4 @@
-const baseUrl = process.env.REACT_APP_API_URL
+const baseUrl = process.env.REACT_APP_API_URL || "http://localhost:7001/api/"
 console.log("baseUrl", baseUrl,process.env)
 const URLS = {
     USER: {
