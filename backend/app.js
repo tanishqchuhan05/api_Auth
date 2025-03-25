@@ -9,6 +9,7 @@ const userRoutes = require("./routes/userRoutes");
 const movieRoutes = require("./routes/movieRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const path = require("path");
+const  ROUTES  = require("./routes/routesEnum");
 
 const app = express();
 app.use(express.json());
@@ -39,11 +40,11 @@ app.get("/test", (req, res) => {
 });
 
 // ✅ Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/movies", movieRoutes);
-app.use("/api/orders", orderRoutes);
+app.use(ROUTES.AUTH, authRoutes);
+app.use(ROUTES.ADMIN, adminRoutes);
+app.use(ROUTES.USER, userRoutes);
+app.use(ROUTES.MOVIES, movieRoutes);
+app.use(ROUTES.ORDERS, orderRoutes);
 
 const PORT = process.env.PORT;
 // ✅ Export app for serverless deployment

@@ -2,24 +2,13 @@ const mongoose = require("mongoose");
 const User = require("../models/userModel");
 const Order = require("../models/orderModel");
 const APIResponse = require("../utilities/APIResponse");
-const Movie = require("../models/movieModel");
 
 // ✅ Get Admin Dashboard Statistics
 const getDashboardStats = async (req, res) => {
     try {
-        // Count total users
         const totalUser = await User.countDocuments({ role: { $in: ["user", "admin", "manager"] } });
-        // Count total orders
         const totalOrder = await Order.countDocuments();
-
-        // Count total movies
-        const totalMovies = await Movie.countDocuments();
-
-        // Calculate total revenue
-        const totalRevenue = await Order.aggregate([
-            { $group: { _id: null, total: { $sum: "$totalAmount" } } }
-        ]);
-
+        const totalRevenue = await Order.aggregate([{ $group: { _id: null, total: { $sum: "$totalAmount" } } }]);
 
         return APIResponse.success(res, {
             status: 200,
@@ -28,7 +17,6 @@ const getDashboardStats = async (req, res) => {
                 totalUser,
                 totalOrder,
                 totalRevenue: totalRevenue[0]?.total || 0,
-                totalMovies
             }
         });
     } catch (error) {
@@ -40,7 +28,7 @@ const getDashboardStats = async (req, res) => {
     }
 };
 
-// ✅ Get All Users (Excluding Admins & Managers)
+// ✅ Get All Users
 const getAllUsers = async (req, res) => {
     try {
         const users = await User.find({ role: { $in: ["user", "admin", "manager"] } });
@@ -67,13 +55,12 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-// ✅ Edit User Details
+// ✅ Edit User
 const editUser = async (req, res) => {
     try {
         const { id } = req.params;
         const { username, email, role } = req.body;
 
-        // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return APIResponse.error(res, {
                 status: 400,
@@ -81,7 +68,6 @@ const editUser = async (req, res) => {
             });
         }
 
-        // Update User
         const updatedUser = await User.findByIdAndUpdate(
             id,
             { username, email, role },
@@ -115,7 +101,6 @@ const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return APIResponse.error(res, {
                 status: 400,
@@ -123,7 +108,6 @@ const deleteUser = async (req, res) => {
             });
         }
 
-        // Find and delete user
         const deletedUser = await User.findByIdAndDelete(id);
 
         if (!deletedUser) {
@@ -147,187 +131,4 @@ const deleteUser = async (req, res) => {
     }
 };
 
-
-// ✅ Get All Movies
-const getAllMovies = async (req, res) => {
-    try {
-        const movies = await Movie.find();
-        
-        return APIResponse.success(res, {
-            status: 200,
-            message: "Movies retrieved successfully",
-            data: movies,
-        });
-    } catch (error) {
-        return APIResponse.error(res, {
-            status: 500,
-            message: "Failed to fetch movies",
-            error: error.message,
-        });
-    }
-};
-
-// ✅ Add a New Movie
-// const addMovie = async (req, res) => {
-//     try {
-//         const { title, price, releaseDate, description, genre, category, isUpcoming } = req.body;
-//         console.log(req.body, "==========678765678767");
-//         console.log(req.file, "==========89898999");
-//         // Ensure an image was uploaded
-//         if (!req.file) {
-//             return APIResponse.error(res, {
-//                 status: 400,
-//                 message: "Image file is required",
-//             });
-//         }
-
-//         const image = `/uploads/${req.file.filename}`; // Save file path
-
-//         const newMovie = new Movie({
-//             title,
-//             genre,
-//             releaseDate,
-//             description,
-//             category,
-//             image: image, // Save the uploaded image path
-//             price,
-//             isUpcoming: isUpcoming || false, // Defaults to false
-//         });
-
-//         await newMovie.save();
-
-//         return APIResponse.success(res, {
-//             status: 201,
-//             message: "Movie added successfully",
-//             data: newMovie,
-//         });
-//     } catch (error) {
-//         return APIResponse.error(res, {
-//             status: 500,
-//             message: "Failed to add movie",
-//             error: error.message,
-//         });
-//     }
-// };
-
-const addMovie = async (req, res) => {
-    try {
-        const { title, price, releaseDate, description, genre, category, isUpcoming, imageURL } = req.body;
-
-        // Ensure an image URL is provided
-        if (!imageURL) {
-            return APIResponse.error(res, {
-                status: 400,
-                message: "Image URL is required",
-            });
-        }
-
-        const newMovie = new Movie({
-            title,
-            genre,
-            releaseDate,
-            description,
-            category,
-            image: imageURL, // Store the direct image URL
-            price,
-            isUpcoming: isUpcoming || false, 
-        });
-
-        await newMovie.save();
-
-        return APIResponse.success(res, {
-            status: 201,
-            message: "Movie added successfully",
-            data: newMovie,
-        });
-    } catch (error) {
-        return APIResponse.error(res, {
-            status: 500,
-            message: "Failed to add movie",
-            error: error.message,
-        });
-    }
-};
-
-
-
-
-
-// // ✅ Edit a Movie
-// const editMovie = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const { title, genre, releaseDate, duration, poster, isUpcoming } = req.body;
-
-//         if (!mongoose.Types.ObjectId.isValid(id)) {
-//             return APIResponse.error(res, {
-//                 status: 400,
-//                 message: "Invalid movie ID",
-//             });
-//         }
-
-//         const updatedMovie = await Movie.findByIdAndUpdate(
-//             id,
-//             { title, genre, releaseDate, duration, poster, isUpcoming },
-//             { new: true, runValidators: true }
-//         );
-
-//         if (!updatedMovie) {
-//             return APIResponse.error(res, {
-//                 status: 404,
-//                 message: "Movie not found",
-//             });
-//         }
-
-//         return APIResponse.success(res, {
-//             status: 200,
-//             message: "Movie updated successfully",
-//             data: updatedMovie,
-//         });
-
-//     } catch (error) {
-//         return APIResponse.error(res, {
-//             status: 500,
-//             message: "Failed to update movie",
-//             error: error.message,
-//         });
-//     }
-// };
-
-// ✅ Delete a Movie
-const deleteMovie = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return APIResponse.error(res, {
-                status: 400,
-                message: "Invalid movie ID",
-            });
-        }
-
-        const deletedMovie = await Movie.findByIdAndDelete(id);
-
-        if (!deletedMovie) {
-            return APIResponse.error(res, {
-                status: 404,
-                message: "Movie not found",
-            });
-        }
-
-        return APIResponse.success(res, {
-            status: 200,
-            message: "Movie deleted successfully",
-        });
-
-    } catch (error) {
-        return APIResponse.error(res, {
-            status: 500,
-            message: "Failed to delete movie",
-            error: error.message,
-        });
-    }
-};
-
-
-module.exports = { getDashboardStats, getAllUsers, editUser, deleteUser, getAllMovies,addMovie, deleteMovie };
+module.exports = { getDashboardStats, getAllUsers, editUser, deleteUser };
