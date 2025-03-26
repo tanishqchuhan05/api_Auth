@@ -32,6 +32,7 @@ const MovieList = ({ searchQuery }) => {
     const fetchMovies = async () => {
       try {
         const data = await movieListService.getAllMovies();
+        console.log("Movies fetched in Movielist", data)
         setMovies(data);
         setFilteredMovies(data);
       } catch (err) {

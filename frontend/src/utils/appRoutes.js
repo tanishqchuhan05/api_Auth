@@ -1,4 +1,3 @@
-// import { Navigate } from "react-router-dom";
 import Signup from "../pages/auth/Signup";
 import Login from "../pages/auth/Login";
 import UserManagement from "../pages/dashboard/Users";
@@ -11,7 +10,7 @@ import Orders from "../pages/Orders";
 import Profile from "../pages/Profile";
 import ROLES from "./roles";
 
-// Define an Enum for Routes
+// Define an Enum for Frontend Routes (NO API URLs here)
 export const APP_ROUTES = Object.freeze({
   // Public Routes
   HOME: "/",
@@ -19,13 +18,14 @@ export const APP_ROUTES = Object.freeze({
   MOVIES: "/movies",
   MOVIE_DETAILS: "/movies/:id",
 
-  // Admin Routes
+  // Admin Routes (Frontend navigation paths)
   ADMIN_DASHBOARD: "/admin/dashboard",
-  ADMIN_USERS: "/admin/getalluser",
+  ADMIN_USERS: "/admin/users",  // Consistent with UI, backend API is in URLS.js
   ADMIN_MOVIES: "/admin/movies",
+  ADMIN_ADD_MOVIE: "/admin/add-movie",
 
   // User Routes
-  USER_DASHBOARD: "/userdashboard",
+  USER_DASHBOARD: "/user/dashboard",
   PROFILE: "/profile",
   ORDERS: "/orders",
 });

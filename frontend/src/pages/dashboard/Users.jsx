@@ -1,47 +1,34 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import userService from "../../Services/userService";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [search, setSearch] = useState("");
 
-  // Fetch users from API
   useEffect(() => {
     fetchUsers();
   }, []);
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem("token"); // Retrieve token
-      const response = await axios.get("http://localhost:7001/api/admin/getallusers", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUsers(response.data.data); // Assuming API returns users inside `data`
+      const userList = await userService.getUsers();
+      setUsers(userList);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
 
-  // Handle Edit Button Click
   const handleEdit = (user) => {
     setSelectedUser(user);
   };
 
-  // Handle Delete User
   const handleDelete = async (userId) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        const token = localStorage.getItem("token"); // Get token inside the function
-        await axios.delete(`http://localhost:7001/api/admin/deleteuser/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await userService.deleteUser(userId);
         alert("User deleted successfully");
-        fetchUsers(); // Refresh users list
+        fetchUsers();
       } catch (error) {
         console.error("Error deleting user:", error);
         alert("Failed to delete user");
@@ -49,22 +36,12 @@ const UserManagement = () => {
     }
   };
 
-  // Handle Update User
   const handleUpdate = async () => {
     try {
-      const token = localStorage.getItem("token"); // Get token inside the function
-      await axios.patch(
-        `http://localhost:7001/api/admin/updateuser/${selectedUser._id}`,
-        selectedUser,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await userService.updateUser(selectedUser._id, selectedUser);
       alert("User updated successfully");
-      fetchUsers(); // Refresh users list
-      document.getElementById("closeModalButton").click(); // Close modal
+      fetchUsers();
+      document.getElementById("closeModalButton").click();
     } catch (error) {
       console.error("Error updating user:", error);
       alert("Failed to update user");
@@ -108,7 +85,6 @@ const UserManagement = () => {
                   <td>{user.email}</td>
                   <td>{user.role}</td>
                   <td>
-                    {/* Open Modal on Click */}
                     <button
                       className="btn btn-warning btn-sm me-2"
                       data-bs-toggle="modal"

@@ -1,4 +1,3 @@
-// AdminMovies.js
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
@@ -56,6 +55,8 @@ const AdminMovies = () => {
   //     alert("Failed to add movie.");
   //   }
   // };
+  
+  
   const handleAddMovie = async () => {
     try {
       if (!newMovie.title || !newMovie.description || !newMovie.releaseDate || !newMovie.price) {
@@ -99,7 +100,7 @@ const AdminMovies = () => {
       );
       if (!confirmDelete) return;
 
-      await apiService.deleteMovie(movieId); // Use centralized service
+      await apiService.deleteMovie(movieId);
       setMovies((prevMovies) =>
         prevMovies.filter((movie) => movie._id !== movieId)
       );
@@ -144,7 +145,7 @@ const AdminMovies = () => {
                     src={
                       movie.image.startsWith("http")
                         ? movie.image
-                        : `http://localhost:7001${movie.image}`
+                        : `${process.env.REACT_APP_IMAGE_URL}${movie.image}`
                     }
                     alt={movie.title}
                     className="card-img-top"
@@ -252,8 +253,8 @@ const AdminMovies = () => {
                   >
                     <option value="">Select Category</option>
                     <option value="Now Playing">Now Playing</option>
-                    <option value="Latest">Latest</option>
-                    <option value="Upcoming">Upcoming</option>
+                    <option value="Latest Movies">Latest Movies</option>
+                    <option value="Upcoming Movies">Upcoming Movies</option>
                   </select>
                 </div>
                 <div className="modal-footer">

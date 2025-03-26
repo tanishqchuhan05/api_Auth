@@ -1,20 +1,27 @@
-const baseUrl = process.env.REACT_APP_API_URL || "http://localhost:7001/api/"
-console.log("baseUrl", baseUrl,process.env)
+const API_VERSION = "/v1"; 
+const baseUrl = process.env.REACT_APP_API_URL?.replace(/\/$/, "") || "http://localhost:7001/api"; 
+
+console.log("baseUrl:", baseUrl, "API_VERSION:", API_VERSION);
+
 const URLS = {
     USER: {
-        REGISTER: `${baseUrl}auth/register`,
-        LOGIN: `${baseUrl}auth/login`,
-        PROFILE: `${baseUrl}profile`, // Aligned with APP_ROUTES.PROFILE
-        ORDERS: `${baseUrl}orders`, // Aligned with APP_ROUTES.ORDERS
+        REGISTER: `${baseUrl}${API_VERSION}/auth/register`,
+        LOGIN: `${baseUrl}${API_VERSION}/auth/login`,
+        PROFILE: `${baseUrl}${API_VERSION}/profile`, 
+        ORDERS: `${baseUrl}${API_VERSION}/orders`, 
     },
     ADMIN: {
-        DASHBOARD: `${baseUrl}admin/dashboard`, // Aligned with APP_ROUTES.ADMIN_DASHBOARD
-        USERS: `${baseUrl}admin/getalluser`, // Aligned with APP_ROUTES.ADMIN_USERS
-        MOVIES: `${baseUrl}admin/movies`, // Aligned with APP_ROUTES.ADMIN_MOVIES
+        DASHBOARD: `${baseUrl}${API_VERSION}/admin/dashboard`,
+        USERS: `${baseUrl}${API_VERSION}/admin/getallusers`,  
+        MOVIES: `${baseUrl}${API_VERSION}/admin/movies`,
+        ADD_MOVIE: `${baseUrl}${API_VERSION}/admin/addmovie`,
+        EDIT_USER: (id) => `${baseUrl}${API_VERSION}/admin/updateuser/${id}`,
+        DELETE_USER: (id) => `${baseUrl}${API_VERSION}/admin/deleteuser/${id}`,
     },
     MOVIES: {
-        LIST: `${baseUrl}movies`, // Aligned with APP_ROUTES.MOVIES
-        DETAILS: (id) => `${baseUrl}movies/${id}`, // Aligned with APP_ROUTES.MOVIE_DETAILS
+        LIST: `${baseUrl}${API_VERSION}/movies`,
+        DETAILS: (id) => `${baseUrl}${API_VERSION}/movies/${id}`,
     }
-}
+};
+
 export default URLS;
