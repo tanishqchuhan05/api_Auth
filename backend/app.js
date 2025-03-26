@@ -10,6 +10,7 @@ const movieRoutes = require("./routes/movieRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const path = require("path");
 const  ROUTES  = require("./routes/routesEnum");
+const routes = require("./routes/index")
 
 const app = express();
 app.use(express.json());
@@ -18,7 +19,7 @@ app.use(express.json());
 dotenv.config();
 
 dbConnect().then(() => {
-  console.log("✅ Connected to MongoDB");
+  // console.log("✅ Connected to MongoDB");
   createSuperAdmin(); 
 });
 
@@ -39,12 +40,7 @@ app.get("/test", (req, res) => {
   res.json({ message: "Backend app is running" });
 });
 
-// ✅ Routes
-app.use(ROUTES.AUTH, authRoutes);
-app.use(ROUTES.ADMIN, adminRoutes);
-app.use(ROUTES.USER, userRoutes);
-app.use(ROUTES.MOVIES, movieRoutes);
-app.use(ROUTES.ORDERS, orderRoutes);
+app.use(routes);
 
 const PORT = process.env.PORT;
 // ✅ Export app for serverless deployment

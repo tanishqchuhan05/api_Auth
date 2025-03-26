@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const movieService = require("../services/movieServices");
 const APIResponse = require("../utilities/APIResponse");
+const MESSAGES = require("../utilities/messagesUtils");
 
 // ✅ Get All Movies
 const getAllMovies = async (req, res) => {
@@ -8,13 +9,13 @@ const getAllMovies = async (req, res) => {
     const movies = await movieService.getAllMovies();
     return APIResponse.success(res, {
       status: 200,
-      message: "Movies retrieved successfully",
+      message: MESSAGES.SUCCESS.MOVIES_RETRIEVED,
       data: movies,
     });
   } catch (error) {
     return APIResponse.error(res, {
       status: 500,
-      message: "Failed to fetch movies",
+      message: MESSAGES.ERROR.FAILED_FETCH_MOVIES,
       error: error.message,
     });
   }
@@ -36,7 +37,7 @@ const addMovie = async (req, res) => {
     if (!imageURL) {
       return APIResponse.error(res, {
         status: 400,
-        message: "Image URL is required",
+        message: MESSAGES.ERROR.IMAGE_REQUIRED,
       });
     }
     const newMovie = await movieService.addMovie({
@@ -51,13 +52,13 @@ const addMovie = async (req, res) => {
     });
     return APIResponse.success(res, {
       status: 201,
-      message: "Movie added successfully",
+      message: MESSAGES.SUCCESS.MOVIE_ADDED,
       data: newMovie,
     });
   } catch (error) {
     return APIResponse.error(res, {
       status: 500,
-      message: "Failed to add movie",
+      message: MESSAGES.ERROR.FAILED_ADD_MOVIE,
       error: error.message,
     });
   }
@@ -70,24 +71,24 @@ const deleteMovie = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return APIResponse.error(res, {
         status: 400,
-        message: "Invalid movie ID",
+        message: MESSAGES.ERROR.INVALID_MOVIE_ID,
       });
     }
     const deletedMovie = await movieService.deleteMovie(id);
     if (!deletedMovie) {
       return APIResponse.error(res, {
         status: 404,
-        message: "Movie not found",
+        message: MESSAGES.ERROR.MOVIE_NOT_FOUND,
       });
     }
     return APIResponse.success(res, {
       status: 200,
-      message: "Movie deleted successfully",
+      message: MESSAGES.SUCCESS.MOVIE_DELETED,
     });
   } catch (error) {
     return APIResponse.error(res, {
       status: 500,
-      message: "Failed to delete movie",
+      message: MESSAGES.ERROR.MOVIE_DELETED,
       error: error.message,
     });
   }

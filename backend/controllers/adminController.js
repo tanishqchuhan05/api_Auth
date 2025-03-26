@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const User = require("../models/userModel");
 const Order = require("../models/orderModel");
 const APIResponse = require("../utilities/APIResponse");
+const Movie = require("../models/movieModel");
+const MESSAGES = require("../utilities/messagesUtils");
 
 // ✅ Get Admin Dashboard Statistics
 const getDashboardStats = async (req, res) => {
@@ -9,6 +11,7 @@ const getDashboardStats = async (req, res) => {
         const totalUser = await User.countDocuments({ role: { $in: ["user", "admin", "manager"] } });
         const totalOrder = await Order.countDocuments();
         const totalRevenue = await Order.aggregate([{ $group: { _id: null, total: { $sum: "$totalAmount" } } }]);
+        const totalMovies = await Movie.countDocuments();
 
         return APIResponse.success(res, {
             status: 200,
@@ -17,12 +20,13 @@ const getDashboardStats = async (req, res) => {
                 totalUser,
                 totalOrder,
                 totalRevenue: totalRevenue[0]?.total || 0,
+                totalMovies
             }
         });
     } catch (error) {
         return APIResponse.error(res, {
             status: 500,
-            message: "Failed to load dashboard stats",
+            message: MESSAGES.ERROR.FAILED_TO_LOAD_DASHBOARD,
             error: error.message
         });
     }
@@ -36,20 +40,20 @@ const getAllUsers = async (req, res) => {
         if (users.length === 0) {
             return APIResponse.error(res, {
                 status: 404,
-                message: "No users found",
+                message: MESSAGES.ERROR.USER_NOT_FOUND,
             });
         }
 
         return APIResponse.success(res, {
             status: 200,
-            message: "All Users Retrieved Successfully",
+            message: MESSAGES.SUCCESS.USERS_RETRIEVED,
             data: users,
         });
 
     } catch (error) {
         return APIResponse.error(res, {
             status: 500,
-            message: "Failed to fetch users",
+            message: MESSAGES.ERROR.FAILED_FETCH_USERS,
             error: error.message,
         });
     }
@@ -64,7 +68,7 @@ const editUser = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return APIResponse.error(res, {
                 status: 400,
-                message: "Invalid user ID",
+                message: MESSAGES.ERROR.INVALID_USER_ID,
             });
         }
 
@@ -77,20 +81,20 @@ const editUser = async (req, res) => {
         if (!updatedUser) {
             return APIResponse.error(res, {
                 status: 404,
-                message: "User not found",
+                message: MESSAGES.ERROR.USER_NOT_FOUND,
             });
         }
 
         return APIResponse.success(res, {
             status: 200,
-            message: "User updated successfully",
+            message: MESSAGES.SUCCESS.USER_UPDATED,
             data: updatedUser,
         });
 
     } catch (error) {
         return APIResponse.error(res, {
             status: 500,
-            message: "Failed to update user",
+            message: MESSAGES.ERROR.FAILED_UPDATE_USER,
             error: error.message,
         });
     }
@@ -104,7 +108,7 @@ const deleteUser = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return APIResponse.error(res, {
                 status: 400,
-                message: "Invalid user ID",
+                message: MESSAGES.ERROR.INVALID_USER_ID,
             });
         }
 
@@ -113,19 +117,19 @@ const deleteUser = async (req, res) => {
         if (!deletedUser) {
             return APIResponse.error(res, {
                 status: 404,
-                message: "User not found",
+                message: MESSAGES.ERROR.USER_NOT_FOUND,
             });
         }
 
         return APIResponse.success(res, {
             status: 200,
-            message: "User deleted successfully",
+            message: MESSAGES.SUCCESS.USER_DELETED,
         });
 
     } catch (error) {
         return APIResponse.error(res, {
             status: 500,
-            message: "Failed to delete user",
+            message: MESSAGES.ERROR.FAILED_DELETE_USER,
             error: error.message,
         });
     }

@@ -1,10 +1,12 @@
+
+
 const ROUTE_ENUMS = {
     // Base Routes
-    AUTH: "/api/auth",
-    ADMIN: "/api/admin",
-    USER: "/api/user",
-    MOVIES: "/api/movies",
-    ORDERS: "/api/orders",
+    AUTH: "/auth",
+    ADMIN: "/admin",
+    USER: "/user",
+    MOVIES: "/movies",
+    ORDERS: "/orders",
   
     // Authentication
     LOGIN: "/login",
