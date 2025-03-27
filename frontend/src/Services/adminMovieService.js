@@ -1,12 +1,13 @@
 
 import axiosInstance from "../utils/axiosInstance";
+import appRoutes, { APP_ROUTES } from "../utils/appRoutes";
 
-const API_URL = process.env.REACT_APP_API_URL;
+// const API_URL = process.env.REACT_APP_API_URL;
 
 const adminMovieService = {
   fetchMovies: async () => {
     try {
-      const response = await axiosInstance.get(API_URL + "admin/movies");
+      const response = await axiosInstance.get(APP_ROUTES.ADMIN_MOVIES);
       return response.data.data;
     } catch (error) {
       console.error("Error fetching movies:", error);
@@ -42,11 +43,7 @@ const adminMovieService = {
   // },
   addMovie: async (movieData) => {
     try {
-        const response = await axiosInstance.post(API_URL + "admin/addmovie", movieData, {
-            headers: {
-                "Content-Type": "application/json", // No need for multipart/form-data
-            },
-        });
+        const response = await axiosInstance.post(APP_ROUTES.ADMIN_ADD_MOVIE, movieData);
 
         console.log(response, "response");
         return response.data.data;
@@ -60,7 +57,7 @@ const adminMovieService = {
 
   deleteMovie: async (movieId) => {
     try {
-      const response = await axiosInstance.delete(API_URL + `admin/movies/${movieId}`);
+      const response = await axiosInstance.delete(`${APP_ROUTES.ADMIN_MOVIES}/${movieId}`);
       return response.data;
     } catch (error) {
       console.error("Error deleting movie:", error);

@@ -13,7 +13,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchDashboardStats = async () => {
       try {
-        const stats = await getAdminDashboardStats(); // ✅ Use centralized API function
+        const stats = await getAdminDashboardStats();
         setDashboardStats(stats);
       } catch (err) {
         setError(err.message);

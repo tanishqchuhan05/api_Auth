@@ -9,7 +9,6 @@ class PasswordHandler {
     // Compare password
     static async comparePassword(password, hashPassword) {
         return await bcrypt.compare(password, hashPassword);
-        console.log()
     }
 }
 

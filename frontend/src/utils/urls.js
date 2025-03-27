@@ -1,20 +1,26 @@
-const baseUrl = process.env.REACT_APP_API_URL
-console.log("baseUrl", baseUrl,process.env)
+
+
 const URLS = {
+    API_VERSION :"/v1",
     USER: {
-        REGISTER: `${baseUrl}auth/register`,
-        LOGIN: `${baseUrl}auth/login`,
-        PROFILE: `${baseUrl}profile`, // Aligned with APP_ROUTES.PROFILE
-        ORDERS: `${baseUrl}orders`, // Aligned with APP_ROUTES.ORDERS
+        REGISTER: `/auth/register`,
+        LOGIN: `/auth/login`,
+        PROFILE: `/profile`, 
+        ORDERS: `/orders`, 
+        CREATE: `/orders/create`
     },
     ADMIN: {
-        DASHBOARD: `${baseUrl}admin/dashboard`, // Aligned with APP_ROUTES.ADMIN_DASHBOARD
-        USERS: `${baseUrl}admin/getalluser`, // Aligned with APP_ROUTES.ADMIN_USERS
-        MOVIES: `${baseUrl}admin/movies`, // Aligned with APP_ROUTES.ADMIN_MOVIES
+        DASHBOARD: `/admin/dashboard`,
+        USERS: `/admin/getallusers`,  
+        MOVIES: `/admin/movies`,
+        ADD_MOVIE: `/admin/addmovie`,
+        EDIT_USER: (id) => `/admin/updateuser/${id}`,
+        DELETE_USER: (id) => `/admin/deleteuser/${id}`,
     },
     MOVIES: {
-        LIST: `${baseUrl}movies`, // Aligned with APP_ROUTES.MOVIES
-        DETAILS: (id) => `${baseUrl}movies/${id}`, // Aligned with APP_ROUTES.MOVIE_DETAILS
+        LIST: `/movies`,
+        DETAILS: (id) => `/movies/${id}`,
     }
-}
+};
+
 export default URLS;

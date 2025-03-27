@@ -4,7 +4,7 @@ const profileService = {
     // Fetch user profile
   getUserProfile: async () => {
     try {
-      const response = await axios.get("/users/profile");
+      const response = await axios.get("/user/profile");
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -14,7 +14,7 @@ const profileService = {
   // Update user profile (only username for now)
   updateUserProfile: async (username) => {
     try {
-      const response = await axios.put("/users/profile/update", { username });
+      const response = await axios.put("/user/profile/update", { username });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

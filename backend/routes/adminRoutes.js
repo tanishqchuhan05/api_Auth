@@ -1,45 +1,33 @@
 const express = require("express");
-const multer = require("multer");
-const path = require("path");
-const { 
-  getDashboardStats, 
-  getAllUsers, 
-  editUser, 
+const {
+  getDashboardStats,
+  getAllUsers,
+  editUser,
   deleteUser,
+} = require("../controllers/adminController");
+
+const {
   getAllMovies,
   addMovie,
   deleteMovie
-} = require("../controllers/adminController");
+} = require("../controllers/movieController");
 
 const adminMiddleware = require("../middlewares/adminMiddleware");
+const ROUTES = require("./routesEnum");
 
 const router = express.Router();
 
-// Multer setup for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Ensure "uploads" folder exists
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
+// ✅ Admin Dashboard Route
+router.get(ROUTES.ADMIN_DASHBOARD, adminMiddleware, getDashboardStats);
 
-const upload = multer({ storage });
-
-// Admin Dashboard Route
-router.get("/dashboard", adminMiddleware, getDashboardStats);
-
-// User Management Routes
-router.get("/getallusers", adminMiddleware, getAllUsers);
-router.patch("/updateuser/:id", adminMiddleware, editUser);
-router.delete("/deleteUser/:id", adminMiddleware, deleteUser);
+// ✅ User Management Routes
+router.get(ROUTES.GET_ALL_USERS, adminMiddleware, getAllUsers);
+router.patch(ROUTES.UPDATE_USER, adminMiddleware, editUser);
+router.delete(ROUTES.DELETE_USER, adminMiddleware,deleteUser)
 
 // ✅ Movie Management Routes
-router.get("/movies", adminMiddleware, getAllMovies);       // Get all movies
-// router.post("/addmovie", adminMiddleware, upload.single("poster_path"), addMovie);  // Add a new movie
-router.post("/addmovie", adminMiddleware, addMovie); 
-// router.put("/movies/:id", adminMiddleware, upload.single("image"), editMovie); // Edit movie
-router.delete("/movies/:id", adminMiddleware, deleteMovie); // Delete movie
+router.get(ROUTES.GET_ALL_MOVIES, adminMiddleware, getAllMovies);  // Get all movies
+router.post(ROUTES.ADD_MOVIE, adminMiddleware, addMovie);  // Add a new movie
+router.delete(ROUTES.DELETE_MOVIE, adminMiddleware, deleteMovie);  // Delete movie
 
 module.exports = router;
