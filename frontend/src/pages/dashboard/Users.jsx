@@ -1,70 +1,62 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import userService from "../../Services/userService";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [search, setSearch] = useState("");
-
-  // Fetch users from API
+console.log(users)
   useEffect(() => {
     fetchUsers();
   }, []);
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem("token"); // Retrieve token
-      const response = await axios.get("http://localhost:7001/api/admin/getallusers", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUsers(response.data.data); // Assuming API returns users inside `data`
+      const userList = await userService.getUsers();
+      setUsers(userList);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
 
-  // Handle Edit Button Click
   const handleEdit = (user) => {
     setSelectedUser(user);
   };
 
-  // Handle Delete User
-  const handleDelete = async (userId) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
+  // const handleDelete = async (userId) => {
+  //   if (window.confirm("Are you sure you want to delete this user?")) {
+  //     try {
+  //       await userService.deleteUser(userId);
+  //       alert("User deleted successfully");
+  //       fetchUsers();
+  //     } catch (error) {
+  //       console.error("Error deleting user:", error);
+  //       alert("Failed to delete user");
+  //     }
+  //   }
+  // };
+
+  // Toggle User Status (Activate/Deactivate)
+  const handleDelete = async (user) => {
+    const newStatus = user.status === "active" ? "inactive" : "active";
+    if (window.confirm(`Are you sure you want to ${newStatus === "active" ? "activate" : "deactivate"} this user?`)) {
       try {
-        const token = localStorage.getItem("token"); // Get token inside the function
-        await axios.delete(`http://localhost:7001/api/admin/deleteuser/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        alert("User deleted successfully");
-        fetchUsers(); // Refresh users list
+        await userService.deleteUser(user._id);
+        // alert(`User ${newStatus === "active" ? "activated" : "deactivated"} successfully`);
+        fetchUsers();
       } catch (error) {
-        console.error("Error deleting user:", error);
-        alert("Failed to delete user");
+        console.error("Error updating user status:", error);
+        alert("Failed to update user status");
       }
     }
   };
 
-  // Handle Update User
   const handleUpdate = async () => {
     try {
-      const token = localStorage.getItem("token"); // Get token inside the function
-      await axios.patch(
-        `http://localhost:7001/api/admin/updateuser/${selectedUser._id}`,
-        selectedUser,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await userService.updateUser(selectedUser._id, selectedUser);
       alert("User updated successfully");
-      fetchUsers(); // Refresh users list
-      document.getElementById("closeModalButton").click(); // Close modal
+      fetchUsers();
+      document.getElementById("closeModalButton").click();
     } catch (error) {
       console.error("Error updating user:", error);
       alert("Failed to update user");
@@ -96,6 +88,7 @@ const UserManagement = () => {
               <th>Email</th>
               <th>Role</th>
               <th>Actions</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -108,7 +101,6 @@ const UserManagement = () => {
                   <td>{user.email}</td>
                   <td>{user.role}</td>
                   <td>
-                    {/* Open Modal on Click */}
                     <button
                       className="btn btn-warning btn-sm me-2"
                       data-bs-toggle="modal"
@@ -117,9 +109,17 @@ const UserManagement = () => {
                     >
                       Edit
                     </button>
-                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(user._id)}>
-                      Delete
+                    <button
+                      className={`btn btn-sm ${user.status === "active" ? "btn-danger" : "btn-success"}`}
+                      onClick={() => handleDelete(user)}
+                    >
+                      {user.status === "active" ? "Deactivate" : "Activate"}
                     </button>
+                  </td>
+                  <td>
+                    <span className={`badge ${user.status === "active" ? "bg-success" : "bg-secondary"}`}>
+                      {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                    </span>
                   </td>
                 </tr>
               ))}

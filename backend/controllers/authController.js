@@ -1,61 +1,70 @@
-const User = require("../models/userModel");
 const APIResponse = require("../utilities/APIResponse");
+const authService = require("../services/authServices");
+const MESSAGES = require("../utilities/messagesUtils");
 const PasswordHandler = require("../utilities/passwordHandler");
-const JWTHandler = require("../utilities/jwtHandler");
 
 const register = async (req, res) => {
-    try {
-        let { username, email, password, role } = req.body;  // Use let for role
-        role = role || "user";  // Default role as 'user'
+    console.log("Register endpoint hit"); // Debugging log
+  try {
+    const newUser = await authService.registerUser(req.body);
 
-        // Hash the password
-        const hashedPassword = await PasswordHandler.hashPassword(password);
-
-        // Create new user
-        const newUser = await User.create({ username, email, password: hashedPassword, role });
-
-        return APIResponse.success(res, { status: 200, message: `User registered with username ${username}`, data: { newUser } });
-    } catch (error) {
-        return APIResponse.error(res, { status: 500, message: "Registration failed", error });
-    }
+    return APIResponse.success(res, {
+      status: 200,
+      message: MESSAGES.SUCCESS.REGISTER,
+      data: { newUser },
+    });
+  } catch (error) {
+    return APIResponse.error(res, {
+      status: 500,
+      message: MESSAGES.ERROR.REGISTRATION_FAILED,
+      error,
+    });
+  }
 };
 
 const login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
+    const user = await authService.findUserByEmail(email);
 
-        // Find user by email
-        const user = await User.findOne({ email });
-        console.log("User found:", user);
-        if (!user) {
-            return APIResponse.error(res, { status: 404, message: `User with email ${email} not found`, error: {} });
-        }
-
-        // Compare passwords
-        const isMatch = await PasswordHandler.comparePassword(password, user.password);
-        if (!isMatch) {
-            return APIResponse.error(res, { status: 400, message: "Invalid Credentials", error: {} });
-        }
-
-        // Generate JWT token
-        const token = JWTHandler.generateToken(user);
-        return APIResponse.success(res, { 
-            status: 200, 
-            message: "Login Successful", 
-            token,
-            user: { 
-                id: user._id, 
-                username: user.username, 
-                email: user.email, 
-                role: user.role  
-            }  
-          });
-    } catch (error) {
-        return APIResponse.error(res, { 
-            status: 500, 
-            message: "Login Failed", 
-            error });
+    if (!user) {
+      return APIResponse.error(res, {
+        status: 404,
+        message: MESSAGES.ERROR.USER_NOT_FOUND,
+        error: {},
+      });
     }
+
+    const isMatch = await PasswordHandler.comparePassword(password, user.password);
+    if (!isMatch) {
+      return APIResponse.error(res, {
+        status: 400,
+        message: MESSAGES.ERROR.INVALID_CREDENTIALS,
+        error: {},
+      });
+    }
+
+    const token = authService.generateToken(user);
+
+    return APIResponse.success(res, {
+      status: 200,
+      message: MESSAGES.SUCCESS.LOGIN,
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        status: user.status
+      },
+    });
+  } catch (error) {
+    return APIResponse.error(res, {
+      status: 500,
+      message: MESSAGES.ERROR.LOGIN_FAILED,
+      error,
+    });
+  }
 };
 
 module.exports = { register, login };

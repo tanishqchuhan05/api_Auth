@@ -1,11 +1,16 @@
 import axios from "axios";
+import URLS from "./urls";
+
 
 const axiosInstance = axios.create({
-    baseURL: process.env.REACT_APP_API_URL || "http://localhost:7001/api/",
-    headers: {
-        "Content-Type": "application/json",
-    }
+  baseURL: `${process.env.REACT_APP_API_URL}${URLS.API_VERSION}`  ,
+  headers: {
+    "Content-Type": "application/json"
+  },
+//   withCredentials: true // ✅ Ensure cookies and authentication are sent
 });
+
+
 
 axiosInstance.interceptors.request.use(
     (config) => {

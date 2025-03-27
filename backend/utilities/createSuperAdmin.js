@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require("../models/userModel");
+const MESSAGES = require('./messagesUtils');
 require("dotenv").config();
 
 
@@ -19,12 +20,12 @@ async function createSuperAdmin() {
         });
   
         await superadmin.save();
-        console.log("SuperAdmin created successfully!");
+        
       } else {
-        console.log("SuperAdmin already exists.");
+       
       }
     } catch (error) {
-      console.error("Error creating superAdmin:", error);
+      throw new Error(MESSAGES.ERROR.FAILED_CREATE_SUPERADMIN +": " + error.message);
     }
   }
 
