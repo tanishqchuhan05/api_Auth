@@ -22,7 +22,7 @@ export const APP_ROUTES = Object.freeze({
   ADMIN_DASHBOARD: "/admin/dashboard",
   ADMIN_USERS: "/admin/users",  // Consistent with UI, backend API is in URLS.js
   ADMIN_MOVIES: "/admin/movies",
-  ADMIN_ADD_MOVIE: "/admin/add-movie",
+  ADMIN_ADD_MOVIE: "/admin/addmovie",
 
   // User Routes
   USER_DASHBOARD: "/user/dashboard",

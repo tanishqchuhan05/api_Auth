@@ -5,7 +5,7 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [search, setSearch] = useState("");
-
+console.log(users)
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -23,15 +23,30 @@ const UserManagement = () => {
     setSelectedUser(user);
   };
 
-  const handleDelete = async (userId) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
+  // const handleDelete = async (userId) => {
+  //   if (window.confirm("Are you sure you want to delete this user?")) {
+  //     try {
+  //       await userService.deleteUser(userId);
+  //       alert("User deleted successfully");
+  //       fetchUsers();
+  //     } catch (error) {
+  //       console.error("Error deleting user:", error);
+  //       alert("Failed to delete user");
+  //     }
+  //   }
+  // };
+
+  // Toggle User Status (Activate/Deactivate)
+  const handleDelete = async (user) => {
+    const newStatus = user.status === "active" ? "inactive" : "active";
+    if (window.confirm(`Are you sure you want to ${newStatus === "active" ? "activate" : "deactivate"} this user?`)) {
       try {
-        await userService.deleteUser(userId);
-        alert("User deleted successfully");
+        await userService.deleteUser(user._id);
+        // alert(`User ${newStatus === "active" ? "activated" : "deactivated"} successfully`);
         fetchUsers();
       } catch (error) {
-        console.error("Error deleting user:", error);
-        alert("Failed to delete user");
+        console.error("Error updating user status:", error);
+        alert("Failed to update user status");
       }
     }
   };
@@ -73,6 +88,7 @@ const UserManagement = () => {
               <th>Email</th>
               <th>Role</th>
               <th>Actions</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -93,9 +109,17 @@ const UserManagement = () => {
                     >
                       Edit
                     </button>
-                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(user._id)}>
-                      Delete
+                    <button
+                      className={`btn btn-sm ${user.status === "active" ? "btn-danger" : "btn-success"}`}
+                      onClick={() => handleDelete(user)}
+                    >
+                      {user.status === "active" ? "Deactivate" : "Activate"}
                     </button>
+                  </td>
+                  <td>
+                    <span className={`badge ${user.status === "active" ? "bg-success" : "bg-secondary"}`}>
+                      {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                    </span>
                   </td>
                 </tr>
               ))}

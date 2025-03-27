@@ -57,7 +57,7 @@ const adminMovieService = {
 
   deleteMovie: async (movieId) => {
     try {
-      const response = await axiosInstance.delete(`${APP_ROUTES.ADMIN_MOVIES}${movieId}`);
+      const response = await axiosInstance.delete(`${APP_ROUTES.ADMIN_MOVIES}/${movieId}`);
       return response.data;
     } catch (error) {
       console.error("Error deleting movie:", error);

@@ -18,6 +18,7 @@ const Login = () => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("adminName", data.user.username);
       localStorage.setItem("role", data.user.role);
+      
 
       // Navigate based on role
       const dashboardRoute =

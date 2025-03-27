@@ -53,8 +53,10 @@ const userService = {
   deleteUser: async (userId) => {
     try {
       await axiosInstance.delete(
-        URLS.ADMIN.DELETE_USER(userId));
-      return "User deleted successfully";
+        URLS.ADMIN.DELETE_USER(userId),{
+          status: "inactive",
+        });
+      return "User status update successfully";
     } catch (error) {
       throw error.response?.data?.message || "Failed to delete user";
     }
