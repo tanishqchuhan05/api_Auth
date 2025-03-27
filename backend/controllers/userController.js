@@ -54,34 +54,142 @@ const editUser = async (req, res) =>{
 
 
 //Delete User (Admin Only)
+// const deleteUser = async (req, res) =>{
+//     try{
+//         const {id} = req.params;
 
-const deleteUser = async (req, res) =>{
-    try{
-        const {id} = req.params;
+//         //find and delete user
+//         const deletedUser = await User.findByIdAndDelete(id);
 
-        //find and delete user
-        const deletedUser = await User.findByIdAndDelete(id);
+//         if(!deletedUser){
+//             return APIResponse.error(res,{
+//                 status: 404,
+//                 message: MESSAGES.ERROR.USER_NOT_FOUND,
+//                 error: {}
+//             });
+//         }
 
-        if(!deletedUser){
-            return APIResponse.error(res,{
+//         return APIResponse.success(res,{
+//             status: 200,
+//             message: MESSAGES.SUCCESS.USER_DELETED
+//         });
+
+//     }catch(error){
+//         return APIResponse.error(res,{
+//             status: 500,
+//             message: MESSAGES.ERROR.FAILED_DELETE_USER,
+//             error: error.message
+//         });
+
+//     }
+// };
+
+// const deleteUser = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+
+//         // Find and update user status to inactive
+//         const updatedUser = await User.findByIdAndUpdate(
+//             id,
+//             { status: "inactive" },
+//             { new: true }
+//         );
+
+//         if (!updatedUser) {
+//             return APIResponse.error(res, {
+//                 status: 404,
+//                 message: MESSAGES.ERROR.USER_NOT_FOUND,
+//                 error: {},
+//             });
+//         }
+
+//         return APIResponse.success(res, {
+//             status: 200,
+//             message: "User status updated to inactive",
+//             data: updatedUser,
+//         });
+
+//     } catch (error) {
+//         return APIResponse.error(res, {
+//             status: 500,
+//             message: MESSAGES.ERROR.FAILED_DELETE_USER,
+//             error: error.message,
+//         });
+//     }
+// };
+
+// const updateUserStatus = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const { status } = req.body; // Expecting "active" or "inactive"
+
+//         // Validate status
+//         if (!["active", "inactive"].includes(status)) {
+//             return APIResponse.error(res, {
+//                 status: 400,
+//                 message: "Invalid status. Allowed values: 'active', 'inactive'.",
+//             });
+//         }
+
+//         const updatedUser = await User.findByIdAndUpdate(
+//             id,
+//             { status },
+//             { new: true }
+//         );
+
+//         if (!updatedUser) {
+//             return APIResponse.error(res, {
+//                 status: 404,
+//                 message: MESSAGES.ERROR.USER_NOT_FOUND,
+//             });
+//         }
+
+//         return APIResponse.success(res, {
+//             status: 200,
+//             message: `User status updated to ${status}`,
+//             data: updatedUser,
+//         });
+
+//     } catch (error) {
+//         return APIResponse.error(res, {
+//             status: 500,
+//             message: MESSAGES.ERROR.FAILED_UPDATE_USER,
+//             error: error.message,
+//         });
+//     }
+// };
+
+
+const restoreUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            { status: "active" },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return APIResponse.error(res, {
                 status: 404,
                 message: MESSAGES.ERROR.USER_NOT_FOUND,
-                error: {}
+                error: {},
             });
         }
 
-        return APIResponse.success(res,{
+        return APIResponse.success(res, {
             status: 200,
-            message: MESSAGES.SUCCESS.USER_DELETED
+            message: MESSAGES.SUCCESS.USER_RESTORED,
+            data: updatedUser,
         });
 
-    }catch(error){
-        return APIResponse.error(res,{
+    } catch (error) {
+        return APIResponse.error(res, {
             status: 500,
-            message: MESSAGES.ERROR.FAILED_DELETE_USER,
-            error: error.message
+            message: MESSAGES.ERROR.FAILED_RESTORE_USER,
+            error: error.message,
         });
-
     }
 };
 
@@ -143,4 +251,4 @@ const updateUserProfile = async (req, res) => {
 
 
 
-module.exports = {getAllUsers, editUser, deleteUser, getUserProfile, updateUserProfile};
+module.exports = {getAllUsers, editUser, getUserProfile, updateUserProfile, restoreUser};

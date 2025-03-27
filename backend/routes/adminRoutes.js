@@ -23,7 +23,7 @@ router.get(ROUTES.ADMIN_DASHBOARD, adminMiddleware, getDashboardStats);
 // ✅ User Management Routes
 router.get(ROUTES.GET_ALL_USERS, adminMiddleware, getAllUsers);
 router.patch(ROUTES.UPDATE_USER, adminMiddleware, editUser);
-router.delete(ROUTES.DELETE_USER, adminMiddleware, deleteUser);
+router.delete(ROUTES.DELETE_USER, adminMiddleware,deleteUser)
 
 // ✅ Movie Management Routes
 router.get(ROUTES.GET_ALL_MOVIES, adminMiddleware, getAllMovies);  // Get all movies

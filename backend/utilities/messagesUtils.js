@@ -13,7 +13,8 @@ const MESSAGES = {
     ORDERS_FETCHED: "Orders fetched successfully",
     TOTAL_REVENUE_FETCHED: "Total revenue fetched successfully",
     PROFILE_RETRIEVED: "Profile retrieved successfully",
-    PROFILE_UPDATE_SUCCESSFULLY: "Profile updated successfully"
+    PROFILE_UPDATE_SUCCESSFULLY: "Profile updated successfully",
+    USER_RESTORED: "User status updated to active"
   },
   ERROR: {
     REGISTRATION_FAILED: "Registration failed",
@@ -44,7 +45,8 @@ const MESSAGES = {
     JWT_MISSING: "JWT is Missing",
     INVALID_AUTH_TOKEN: "Invalid auth token",
     NO_TOKEN_PROVIDED: "Access Denied: No Token Provided",
-    FAILED_CREATE_SUPERADMIN: "Error creating SuperAdmin"
+    FAILED_CREATE_SUPERADMIN: "Error creating SuperAdmin",
+    FAILED_RESTORE_USER: "Failed to restore user",
   },
 };
 

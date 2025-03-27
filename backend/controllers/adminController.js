@@ -105,25 +105,25 @@ const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return APIResponse.error(res, {
-                status: 400,
-                message: MESSAGES.ERROR.INVALID_USER_ID,
-            });
-        }
+        // Find and update user status to inactive
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            { status: "inactive" },
+            { new: true }
+        );
 
-        const deletedUser = await User.findByIdAndDelete(id);
-
-        if (!deletedUser) {
+        if (!updatedUser) {
             return APIResponse.error(res, {
                 status: 404,
                 message: MESSAGES.ERROR.USER_NOT_FOUND,
+                error: {},
             });
         }
 
         return APIResponse.success(res, {
             status: 200,
-            message: MESSAGES.SUCCESS.USER_DELETED,
+            message: "User status updated to inactive",
+            data: updatedUser,
         });
 
     } catch (error) {
