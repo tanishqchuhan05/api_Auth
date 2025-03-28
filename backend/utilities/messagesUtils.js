@@ -47,6 +47,7 @@ const MESSAGES = {
     NO_TOKEN_PROVIDED: "Access Denied: No Token Provided",
     FAILED_CREATE_SUPERADMIN: "Error creating SuperAdmin",
     FAILED_RESTORE_USER: "Failed to restore user",
+    USER_INACTIVE: "Your account is inactive. Contact Admin."
   },
 };
 
