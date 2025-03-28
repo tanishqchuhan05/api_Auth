@@ -17,7 +17,7 @@ const getImageUrl = (imagePath) => {
 };
 
 const OrderCard = ({ order }) => {
-  console.log(order, "order");
+
 
   return (
     <div className="card mb-3 shadow-sm">
