@@ -5,7 +5,7 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [search, setSearch] = useState("");
-console.log(users)
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -15,7 +15,7 @@ console.log(users)
       const userList = await userService.getUsers();
       setUsers(userList);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      alert("Error fetching users");
     }
   };
 
@@ -45,7 +45,6 @@ console.log(users)
         // alert(`User ${newStatus === "active" ? "activated" : "deactivated"} successfully`);
         fetchUsers();
       } catch (error) {
-        console.error("Error updating user status:", error);
         alert("Failed to update user status");
       }
     }

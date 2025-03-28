@@ -34,7 +34,14 @@ const login = async (req, res) => {
         error: {},
       });
     }
-
+//Prevent login if user is inactive
+if (user.status === "inactive") {
+  return APIResponse.error(res, {
+    status: 403,
+    message: MESSAGES.ERROR.USER_INACTIVE,
+    error: {},
+  });
+}
     const isMatch = await PasswordHandler.comparePassword(password, user.password);
     if (!isMatch) {
       return APIResponse.error(res, {
