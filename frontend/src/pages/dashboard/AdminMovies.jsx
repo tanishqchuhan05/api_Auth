@@ -67,7 +67,7 @@ const AdminMovies = () => {
   const handleAddMovie = async () => {
     try {
       if (!newMovie.title || !newMovie.description || !newMovie.releaseDate || !newMovie.price) {
-        showToast("Please fill in all required fields.");
+        showToast("Please fill in all required fields.", "error");
         return;
       }
   
