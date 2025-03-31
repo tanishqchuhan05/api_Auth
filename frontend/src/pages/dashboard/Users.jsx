@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import userService from "../../Services/userService";
+import { showToast } from "../../components/Toast";
+import SweetAlert from "../../components/SweetAlert";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -14,8 +16,9 @@ const UserManagement = () => {
     try {
       const userList = await userService.getUsers();
       setUsers(userList);
+      showToast("Users fetched successfully", "success");
     } catch (error) {
-      alert("Error fetching users");
+      showToast("Error fetching users", "error");
     }
   };
 
@@ -23,29 +26,20 @@ const UserManagement = () => {
     setSelectedUser(user);
   };
 
-  // const handleDelete = async (userId) => {
-  //   if (window.confirm("Are you sure you want to delete this user?")) {
-  //     try {
-  //       await userService.deleteUser(userId);
-  //       alert("User deleted successfully");
-  //       fetchUsers();
-  //     } catch (error) {
-  //       console.error("Error deleting user:", error);
-  //       alert("Failed to delete user");
-  //     }
-  //   }
-  // };
-
-  // Toggle User Status (Activate/Deactivate)
   const handleDelete = async (user) => {
     const newStatus = user.status === "active" ? "inactive" : "active";
-    if (window.confirm(`Are you sure you want to ${newStatus === "active" ? "activate" : "deactivate"} this user?`)) {
+    const result = await SweetAlert.confirm(
+      `Are you sure you want to ${newStatus === "active" ? "activate" : "deactivate"} this user?`,
+      "This action can be reverted later."
+    );
+    
+    if (result.isConfirmed) {
       try {
         await userService.deleteUser(user._id);
-        // alert(`User ${newStatus === "active" ? "activated" : "deactivated"} successfully`);
+        showToast(`User ${newStatus === "active" ? "activated" : "deactivated"} successfully`);
         fetchUsers();
       } catch (error) {
-        alert("Failed to update user status");
+        showToast("Failed to update user status", "error");
       }
     }
   };
@@ -53,12 +47,11 @@ const UserManagement = () => {
   const handleUpdate = async () => {
     try {
       await userService.updateUser(selectedUser._id, selectedUser);
-      alert("User updated successfully");
+      showToast("User updated successfully");
       fetchUsers();
       document.getElementById("closeModalButton").click();
     } catch (error) {
-      console.error("Error updating user:", error);
-      alert("Failed to update user");
+      showToast("Failed to update user", "error");
     }
   };
 
