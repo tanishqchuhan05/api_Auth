@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import profileService from "../Services/profileService";
+import SweetAlert from "../components/SweetAlert";
 
 
 const Profile = () => {
@@ -20,7 +21,7 @@ const Profile = () => {
         role: data.data.role,
       });
     } catch (error) {
-      console.error("Error fetching profile:", error);
+      SweetAlert.error("Error fetching profile:", error);
     }
   };
 
@@ -32,10 +33,9 @@ const Profile = () => {
     try {
       await profileService.updateUserProfile(user.username); // Correct API call
       setIsEditing(false);
-      alert("Profile updated successfully!");
+      SweetAlert.success("Profile updated successfully!");
     } catch (error) {
-      console.error("Update failed:", error);
-      alert("Failed to update profile.");
+      SweetAlert.error("Failed to update profile.");
     }
   };
 

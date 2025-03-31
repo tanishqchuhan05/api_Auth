@@ -1,3 +1,4 @@
+import { showToast } from "../components/Toast";
 import axiosInstance from "../utils/axiosInstance";
 import URLS from "../utils/urls";
 
@@ -9,9 +10,14 @@ import URLS from "../utils/urls";
   try {
     const response = await axiosInstance.get(URLS.ADMIN.DASHBOARD);
     return response.data.data;
-  } catch (error) {
-    console.error("❌ Error fetching admin dashboard stats:", error.response?.data?.message || error.message);
-    throw new Error(error.response?.data?.message || "Failed to fetch dashboard stats");
+  }  catch (error) {
+    const errorMessage = error.response?.data?.message || "Failed to fetch dashboard stats";
+
+    console.error("❌ Error fetching admin dashboard stats:", errorMessage);
+    
+    // Show error toast
+    showToast(errorMessage, "error");
+    throw new Error(errorMessage);
   }
 };
 

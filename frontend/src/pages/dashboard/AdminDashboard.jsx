@@ -3,6 +3,8 @@ import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import   getAdminDashboardStats  from "../../Services/adminDashboardService"; // ✅ Import centralized API function
 import { APP_ROUTES } from "../../utils/appRoutes";
+import Loader from "../../components/Loader";
+import { showToast } from "../../components/Toast";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -15,6 +17,8 @@ const AdminDashboard = () => {
       try {
         const stats = await getAdminDashboardStats();
         setDashboardStats(stats);
+        // Show success toast when data is fetched
+        showToast("Dashboard data fetched successfully!", "success");
       } catch (err) {
         setError(err.message);
       } finally {
@@ -32,7 +36,9 @@ const AdminDashboard = () => {
         <h2 className="text-center mb-4">Admin Dashboard</h2>
 
         {loading ? (
-          <p className="text-center">Loading...</p>
+          <div className="d-flex justify-content-center align-items-center">
+            <Loader />
+          </div>
         ) : error ? (
           <p className="text-danger text-center">{error}</p>
         ) : (

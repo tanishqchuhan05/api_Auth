@@ -5,6 +5,8 @@ import userService from "../../Services/userService";
 import signupValidationSchema from "../../Validations/signupValidation";
 import ROLES from "../../utils/roles";
 import { APP_ROUTES } from "../../utils/appRoutes"; // Import Routes
+import Loader from "../../components/Loader";
+import { showToast } from "../../components/Toast";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -12,11 +14,30 @@ const Signup = () => {
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     try {
+       // Format username (capitalize first letter of each word)
+    const formattedUsername = values.username
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+  // Convert email to lowercase
+  const formattedEmail = values.email.toLowerCase();
+
+  // Send formatted values to backend
+  const formattedValues = { 
+    ...values, 
+    username: formattedUsername, 
+    email: formattedEmail 
+  };
+
+
       await userService.register({ ...values, role: ROLES.USER });
-      alert("Registration successful!");
+      showToast("Registration successful!");
       navigate(APP_ROUTES.LOGIN); // Use APP_ROUTES instead of hardcoded path
     } catch (error) {
       setErrors({ general: error });
+      showToast(error.message || "Registration failed!", "error");
     }
     setSubmitting(false);
   };
@@ -63,7 +84,7 @@ const Signup = () => {
               </div>
 
               <button type="submit" className="btn btn-primary w-100" disabled={isSubmitting}>
-                {isSubmitting ? "Signing up..." : "Sign Up"}
+                {isSubmitting ? <Loader/> : "Sign Up"}
               </button>
 
               <p className="text-center mt-3">
