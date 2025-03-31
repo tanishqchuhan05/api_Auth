@@ -13,6 +13,9 @@ const authMiddleware = (req, res, next) => {
 
     try {
         const decoded = JWTHandler.verifyToken(authToken);
+        if(!decoded || !decoded?.id){
+            //error
+        }
         req.user = decoded; // ✅ Attach user data to request object
         next(); // ✅ Proceed to next middleware
     } catch (error) {
