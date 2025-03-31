@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import Navbar from "../../components/Navbar";
 import apiService from "../../Services/adminMovieService";
+import { showToast } from "../../components/Toast";
+import Swal from "sweetalert2";
 
 const AdminMovies = () => {
   const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true); // Add loading state
   const [newMovie, setNewMovie] = useState({
     title: "",
     description: "",
@@ -24,10 +27,14 @@ const AdminMovies = () => {
 
   const loadMovies = async () => {
     try {
+      setLoading(true)
       const moviesData = await apiService.fetchMovies(); // Use centralized service
       setMovies(moviesData);
+      showToast("Movie fetched successfully", "success")
     } catch (error) {
-      alert("Failed to fetch movies.");
+      showToast("Failed to fetch movies.");
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -60,7 +67,7 @@ const AdminMovies = () => {
   const handleAddMovie = async () => {
     try {
       if (!newMovie.title || !newMovie.description || !newMovie.releaseDate || !newMovie.price) {
-        alert("Please fill in all required fields.");
+        showToast("Please fill in all required fields.");
         return;
       }
   
@@ -85,9 +92,9 @@ const AdminMovies = () => {
   
       setShowModal(false);
       resetNewMovie();
-      alert("Movie added successfully!");
+      showToast("Movie added successfully!");
     } catch (error) {
-      alert("Failed to add movie.");
+      showToast("Failed to add movie.");
     }
   };
   
@@ -95,18 +102,24 @@ const AdminMovies = () => {
 
   const handleDeleteMovie = async (movieId) => {
     try {
-      const confirmDelete = window.confirm(
-        "Are you sure you want to delete this movie?"
-      );
-      if (!confirmDelete) return;
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+      });
+      if (!result.isConfirmed) return;
 
       await apiService.deleteMovie(movieId);
       setMovies((prevMovies) =>
         prevMovies.filter((movie) => movie._id !== movieId)
       );
-      alert("Movie deleted successfully!");
+      Swal.fire("Deleted!", "Movie has been deleted.", "success");
     } catch (error) {
-      alert("Failed to delete movie.");
+      showToast("Failed to delete movie.");
     }
   };
 

@@ -5,6 +5,8 @@ import { APP_ROUTES } from "../../utils/appRoutes";
 import { loginValidationSchema } from "../../Validations/loginValidation"; 
 import ROLES from "../../utils/roles"; 
 import { loginUser } from "../../Services/authService";
+import Loader from "../../components/Loader";
+import { showToast } from "../../components/Toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,6 +20,8 @@ const Login = () => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("adminName", data.user.username);
       localStorage.setItem("role", data.user.role);
+
+      showToast("Login Successfull!", "success");
       
 
       // Navigate based on role
@@ -73,7 +77,7 @@ const Login = () => {
               </div>
 
               <button type="submit" className="btn btn-primary w-100" disabled={isSubmitting}>
-                {isSubmitting ? "Logging in..." : "Login"}
+                {isSubmitting ? <Loader/> : "Login"}
               </button>
 
               <p className="text-center mt-3">

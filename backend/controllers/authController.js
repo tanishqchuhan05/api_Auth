@@ -4,7 +4,6 @@ const MESSAGES = require("../utilities/messagesUtils");
 const PasswordHandler = require("../utilities/passwordHandler");
 
 const register = async (req, res) => {
-    console.log("Register endpoint hit"); // Debugging log
   try {
     const newUser = await authService.registerUser(req.body);
 
