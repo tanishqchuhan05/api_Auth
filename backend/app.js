@@ -19,7 +19,7 @@ app.use(express.json());
 dotenv.config();
 
 dbConnect().then(() => {
-  // console.log("✅ Connected to MongoDB");
+  // console.log("Connected to MongoDB");
   createSuperAdmin(); 
 });
 
@@ -43,7 +43,7 @@ app.get("/test", (req, res) => {
 app.use(routes);
 
 const PORT = process.env.PORT;
-// ✅ Export app for serverless deployment
+//Export app for serverless deployment
 app.listen(PORT, () => {
   console.log("Server is running");
 });

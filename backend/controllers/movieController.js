@@ -3,7 +3,7 @@ const movieService = require("../services/movieServices");
 const APIResponse = require("../utilities/APIResponse");
 const MESSAGES = require("../utilities/messagesUtils");
 
-// ✅ Get All Movies
+//Get All Movies
 const getAllMovies = async (req, res) => {
   try {
     const movies = await movieService.getAllMovies();
@@ -21,7 +21,7 @@ const getAllMovies = async (req, res) => {
   }
 };
 
-// ✅ Add a New Movie
+//Add a New Movie
 const addMovie = async (req, res) => {
   try {
     const {
@@ -64,7 +64,7 @@ const addMovie = async (req, res) => {
   }
 };
 
-// ✅ Delete a Movie
+//Delete a Movie
 const deleteMovie = async (req, res) => {
   try {
     const { id } = req.params;

@@ -8,7 +8,7 @@ const  authMiddleware  = require("../middlewares/authMiddleware");
 // Fetch orders for the logged-in user
 router.get('/', authMiddleware, getOrders); // This is the new GET route to fetch orders
 
-// ✅ Ensure createOrder is correctly used
+//Ensure createOrder is correctly used
 router.post("/create", authMiddleware, createOrder);
 
 
