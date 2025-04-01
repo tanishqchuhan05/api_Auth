@@ -74,10 +74,10 @@ const AdminMovies = () => {
       let movieData;
   
       if (newMovie.imageURL) {
-        // ✅ If user enters an image URL, save it directly
+        // If user enters an image URL, save it directly
         movieData = { ...newMovie, image: newMovie.imageURL };
       } else if (newMovie.poster_path) {
-        // ✅ If user uploads an image, process file upload
+        // If user uploads an image, process file upload
         let formData = new FormData();
         Object.keys(newMovie).forEach((key) => {
           if (key !== "imageURL") formData.append(key, newMovie[key]);
