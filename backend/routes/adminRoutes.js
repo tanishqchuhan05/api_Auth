@@ -9,7 +9,8 @@ const {
 const {
   getAllMovies,
   addMovie,
-  deleteMovie
+  deleteMovie,
+  editMovie
 } = require("../controllers/movieController");
 
 const adminMiddleware = require("../middlewares/adminMiddleware");
@@ -29,5 +30,6 @@ router.delete(ROUTES.DELETE_USER, adminMiddleware,deleteUser)
 router.get(ROUTES.GET_ALL_MOVIES, adminMiddleware, getAllMovies);  // Get all movies
 router.post(ROUTES.ADD_MOVIE, adminMiddleware, addMovie);  // Add a new movie
 router.delete(ROUTES.DELETE_MOVIE, adminMiddleware, deleteMovie);  // Delete movie
+router.put(ROUTES.UPDATE_MOVIE, adminMiddleware,editMovie);
 
 module.exports = router;
