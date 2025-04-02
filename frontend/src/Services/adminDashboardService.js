@@ -11,10 +11,7 @@ import URLS from "../utils/urls";
     const response = await axiosInstance.get(URLS.ADMIN.DASHBOARD);
     return response.data.data;
   }  catch (error) {
-    const errorMessage = error.response?.data?.message || "Failed to fetch dashboard stats";
-
-    console.error("❌ Error fetching admin dashboard stats:", errorMessage);
-    
+    const errorMessage = error.response?.data?.message || "Failed to fetch dashboard stats"; 
     // Show error toast
     showToast(errorMessage, "error");
     throw new Error(errorMessage);

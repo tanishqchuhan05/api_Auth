@@ -10,7 +10,7 @@ const movieSchema = new mongoose.Schema({
   category: { type: String, enum: ["Upcoming Movies", "Latest Movies", "Now Playing"], required: true },
   image: { type: String, required: true }, // Store image URL or file path
   genre: { type: String, required: true },
-
+  isDelete:{type: Boolean, default: false}
 });
 const Movie = mongoose.model("Movie", movieSchema);
 

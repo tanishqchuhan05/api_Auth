@@ -12,7 +12,7 @@ router.get("/allusers",authMiddleware,getAllUsers);
 //Route to edit a user (only for admin)
 router.put("/updateuser/:id", adminMiddleware, editUser);
 
-// ✅ Activate/Inactivate User (instead of deletion)
+// Activate/Inactivate User (instead of deletion)
 // router.put("/update-status/:id", adminMiddleware, updateUserStatus);
 
 

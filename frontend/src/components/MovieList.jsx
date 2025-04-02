@@ -9,32 +9,22 @@ const MovieList = ({ searchQuery }) => {
   const [activeFilter, setActiveFilter] = useState("All Movies");
   const navigate = useNavigate();
 
-
-  const getImageUrl = (imagePath) => {
-  if (!imagePath) return "/default-movie.jpg"; // Fallback image
-
-  const baseUrl = process.env.REACT_APP_API_URL?.replace(/\/api\/$/, "");
-
-  if (imagePath.startsWith("/uploads")) {
-    return `${baseUrl}${imagePath}`; // Ensures correct URL
-  }
-
-  if (imagePath.startsWith("http")) {
-    return imagePath; // Already a full URL
-  }
-
-  return `${baseUrl}/uploads/${imagePath}`;
-};
-
-
   // Fetch movies on component mount
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const data = await movieListService.getAllMovies();
-        console.log("Movies fetched in Movielist", data)
-        setMovies(data);
-        setFilteredMovies(data);
+        const response = await movieListService.getAllMovies();
+        const { data } = response; // Assuming response contains data directly
+
+        console.log("Fetched movies:", data);
+
+        // Ensure the fetched data is an array and has the expected structure
+        if (Array.isArray(data)) {
+          setMovies(data);
+          setFilteredMovies(data);
+        } else {
+          setError("Failed to fetch movies.");
+        }
       } catch (err) {
         setError("Failed to fetch movies. Please try again.");
       }
@@ -104,7 +94,7 @@ const MovieList = ({ searchQuery }) => {
                 style={{ cursor: "pointer" }}
               >
                 <img
-                  src={getImageUrl(movie.image)}
+                  src={movie.image} // Directly use the image URL from the API
                   alt={movie.title}
                   className="card-img-top"
                   style={{ height: "500px", objectFit: "cover" }}

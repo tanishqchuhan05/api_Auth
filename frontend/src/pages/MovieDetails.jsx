@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaStar, FaRegBookmark, FaArrowLeft } from "react-icons/fa";
 import BookingModal from "../components/BookingModal";
-import getMovieDetails from "../Services/movieDetailsService";
-
+import getMovieDetails from "../Services/movieDetailsService";  // Ensure this import is correct
 
 const MovieDetails = () => {
   const { id } = useParams();
@@ -24,7 +23,7 @@ const MovieDetails = () => {
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        const movieData = await getMovieDetails(id);
+        const movieData = await getMovieDetails(id);  // Use the correct function here
         movieData.rating =
           movieData.rating || (Math.random() * (10 - 5) + 5).toFixed(1);
         movieData.votes =
@@ -37,7 +36,7 @@ const MovieDetails = () => {
 
     fetchMovie();
   }, [id]);
-
+console.log("movies",movie)
   if (error) return <div className="text-center text-danger mt-4">{error}</div>;
   if (!movie)
     return <div className="text-center text-white mt-4">Loading...</div>;

@@ -17,7 +17,7 @@ const orderSchema = new mongoose.Schema(
             required: true,
             default: 1,
         },
-        totalAmount: {  // ✅ Store total amount (including convenience fee)
+        totalAmount: {  // Store total amount (including convenience fee)
             type: Number,
             required: true,
         },

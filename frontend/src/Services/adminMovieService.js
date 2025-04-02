@@ -52,7 +52,15 @@ const adminMovieService = {
         throw error;
     }
 },
-
+updateMovie: async (movieId, movieData) => {
+  try {
+    const response = await axiosInstance.put(`${APP_ROUTES.EDIT_MOVIE}/${movieId}`, movieData);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error updating movie:", error);
+    throw error;
+  }
+},
 
 
   deleteMovie: async (movieId) => {

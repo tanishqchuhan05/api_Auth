@@ -5,7 +5,7 @@ const APIResponse = require("../utilities/APIResponse");
 const Movie = require("../models/movieModel");
 const MESSAGES = require("../utilities/messagesUtils");
 
-// ✅ Get Admin Dashboard Statistics
+//Get Admin Dashboard Statistics
 const getDashboardStats = async (req, res) => {
     try {
         const totalUser = await User.countDocuments({ role: { $in: ["user", "admin", "manager"] } });
@@ -32,7 +32,7 @@ const getDashboardStats = async (req, res) => {
     }
 };
 
-// ✅ Get All Users
+//Get All Users
 const getAllUsers = async (req, res) => {
     try {
         const users = await User.find({ role: { $in: ["user", "admin", "manager"] } });
@@ -59,7 +59,7 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-// ✅ Edit User
+//Edit User
 const editUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -100,7 +100,7 @@ const editUser = async (req, res) => {
     }
 };
 
-// ✅ Delete User
+//Delete User
 const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
