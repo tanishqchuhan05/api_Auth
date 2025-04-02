@@ -15,7 +15,7 @@ async function createSuperAdmin() {
         const superadmin = new User({
           username: process.env.SUPER_ADMIN_USERNAME ,
           email: process.env.SUPER_ADMIN_EMAIL,
-          password: hashedPassword, // ✅ Store hashed password
+          password: hashedPassword, // Store hashed password
           role: "superAdmin",
         });
   

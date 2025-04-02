@@ -40,7 +40,7 @@ const ROUTE_ENUMS = {
     GET_ALL_MOVIES: "/movies",
     ADMIN_GET_MOVIE: "/getMovie/:_id",
     DELETE_MOVIE: "/movies/:id",
-    UPDATE_MOVIE: "/movie/:_id",
+    UPDATE_MOVIE: "/updateMovie/:id",
   };
   
   module.exports = ROUTE_ENUMS;

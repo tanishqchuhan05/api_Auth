@@ -8,7 +8,7 @@ const ROUTES = require("./routesEnum");
 
 const router = express.Router();
 
-// ✅ API Versioning
+//API Versioning
 const API_VERSION = "/api/v1";
 
 router.use(`${API_VERSION}${ROUTES.AUTH}`, authRoutes);

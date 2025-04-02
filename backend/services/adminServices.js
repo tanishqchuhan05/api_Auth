@@ -2,7 +2,7 @@ const User = require("../models/userModel");
 const Order = require("../models/orderModel");
 const Movie = require("../models/movieModel");
 
-// ✅ Get Dashboard Stats
+// Get Dashboard Stats
 const getDashboardStats = async () => {
     const totalUser = await User.countDocuments({ role: { $in: ["user", "admin", "manager"] } });
     const totalOrder = await Order.countDocuments();
@@ -20,17 +20,17 @@ const getDashboardStats = async () => {
     };
 };
 
-// ✅ Get All Users
+// Get All Users
 const getAllUsers = async () => {
     return await User.find({ role: { $in: ["user", "admin", "manager"] } });
 };
 
-// ✅ Edit User
+// Edit User
 const editUser = async (id, updateData) => {
     return await User.findByIdAndUpdate(id, updateData, { new: true, runValidators: true, select: "-password" });
 };
 
-// ✅ Delete User
+// Delete User
 const deleteUser = async (id) => {
     return await User.findByIdAndDelete(id);
 };
