@@ -240,7 +240,7 @@ const AdminMovies = () => {
                     className="form-control mb-2"
                     name="imageURL"
                     placeholder="Enter Image URL"
-                    value={newMovie.imageURL}
+                    value={newMovie.image}
                     onChange={handleInputChange}
                   />
                   <input

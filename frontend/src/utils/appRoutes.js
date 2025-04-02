@@ -23,6 +23,7 @@ export const APP_ROUTES = Object.freeze({
   ADMIN_USERS: "/admin/users",  
   ADMIN_MOVIES: "/admin/movies",
   ADMIN_ADD_MOVIE: "/admin/addmovie",
+  EDIT_MOVIE: "/admin/updateMovie",
 
   // User Routes
   USER_DASHBOARD: "/user/dashboard",
