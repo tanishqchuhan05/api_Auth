@@ -45,6 +45,13 @@ const AdminMovies = () => {
         showToast("Please fill in all required fields.", "error");
         return;
       }
+
+       // Prevent past date selection
+    const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+    if (newMovie.releaseDate < today) {
+      showToast("Release date cannot be in the past!", "error");
+      return;
+    }
   
       const movieData = { ...newMovie };
       const addedMovie = await apiService.addMovie(movieData); // Call the add movie API
@@ -77,6 +84,13 @@ const AdminMovies = () => {
         showToast("Please fill in all required fields.", "error");
         return;
       }
+
+       // Prevent past date selection
+    const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+    if (newMovie.releaseDate < today) {
+      showToast("Release date cannot be in the past!", "error");
+      return;
+    }
 
       const movieData = { ...newMovie };
       const updatedMovie = await apiService.updateMovie(editingMovie._id, movieData); // Call the update API
